@@ -1,0 +1,424 @@
+package com.mktneutral;
+
+import org.openqa.selenium.firefox.FirefoxDriver;
+import au.com.bytecode.opencsv.CSVReader;
+import java.io.IOException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.imageio.ImageIO;
+import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.regex.Pattern;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.net.URL;
+import java.awt.image.BufferedImage;
+import java.awt.Robot;
+import java.awt.AWTException;
+import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
+import java.net.MalformedURLException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver.TargetLocator;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverBackedSelenium;
+import org.openqa.selenium.WebDriverException;
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.Keys;
+import org.browsermob.proxy.ProxyServer;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.CapabilityType;
+import org.browsermob.core.har.Har;
+import org.browsermob.core.har.HarLog;
+import org.browsermob.core.har.HarEntry;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
+
+public class AdMonitor { 
+    private static ProxyServer server;
+    private static Proxy proxy;
+    private static WebDriverBackedSelenium selena;
+    private static Har har;
+    private static String harFileName;
+    private static ArrayList<String> adKeys;
+    private static Connection hsqldb;
+    private static Statement stmt;
+    private static String winName;
+    private static int fullScreen = 0;
+    private static Robot bot;
+
+    public static void main( String[] args ) {
+      try {
+	 CSVReader listReader = new CSVReader( new FileReader( "./inputfile_sample.txt" ),'\t' );
+     
+         CSVReader adListReader = new CSVReader( new FileReader( "./adfilter_sample.txt" ),'\t' );
+         List<String[]> adRows = (List<String[]>) adListReader.readAll();
+
+         java.sql.Date now = new java.sql.Date( (new java.util.Date()).getTime() );
+         String dateString = now.toString();
+         bot = new Robot();
+         harFileName = "/tmp/NetworkTraffic" + dateString + ".har";
+        
+         adKeys = new ArrayList<String>();
+ 
+	 for ( String[] row : adRows ) {
+	    adKeys.add( row[0].trim() );
+	 }
+
+         startServer();
+         getPageTraffic( args[0].trim() );
+        
+         getDBConnection();
+         parseJSONTraffic();
+
+         downloadFiles();
+         getFileTypes();
+         getBadImages();
+         writeAdUrls();
+         printGoodContentTypeFiles();
+         getLandingPages( args[0].trim() );
+         closeDBConnection();
+
+          try {
+        Process p = Runtime.getRuntime().exec( "/usr/bin/killall firefox-bin" );
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String s;
+        while ((s=r.readLine())!=null) {
+	   System.out.println( s );
+        }
+        r.close();
+       } catch ( IOException ioe ) { ioe.printStackTrace(); }
+       catch ( NullPointerException npe ) { npe.printStackTrace(); }
+       catch ( Exception awte ) { awte.printStackTrace(); } 
+
+         server.stop();
+      } catch ( Exception e ) { e.printStackTrace(); }
+    }
+
+    public static void startServer() {    
+      try {
+       server = new ProxyServer( 4444 );
+       server.start();
+       proxy = server.seleniumProxy();
+      } catch ( Exception e ) { e.printStackTrace(); }
+    }
+
+    public static void getPageTraffic( String _url ) {
+      try {
+       DesiredCapabilities capabilities = new DesiredCapabilities();
+       capabilities.setCapability(CapabilityType.PROXY, proxy);
+      
+       FirefoxDriver driver = new FirefoxDriver(capabilities);
+       server.newHar( "univision.com" );
+       selena = new WebDriverBackedSelenium( driver, "univision.com" );
+       selena.getWrappedDriver().get( _url );
+       //selena.openWindow( _url, "firstWindow" );
+       selena.windowMaximize();
+       har = server.getHar();
+       har.writeTo( new FileOutputStream( harFileName ) );      
+      } catch ( Exception e ) { e.printStackTrace(); }
+    }
+
+   public static void parseJSONTraffic() {
+    try {
+     BufferedReader r = new BufferedReader( new FileReader( harFileName ) );
+     String s;
+     String jsonString = "";
+     while ((s=r.readLine())!=null) {
+	jsonString += s.trim();
+     }
+     r.close();
+    
+     stmt.executeUpdate("DROP TABLE IF EXISTS url_list");
+     stmt.executeUpdate("CREATE TABLE url_list ( url_string VARCHAR(2048) )");
+    
+     JSONObject jsonObj = new JSONObject( jsonString );
+     JSONObject logObj = jsonObj.getJSONObject( "log" );    
+     JSONArray entriesArray = logObj.getJSONArray("entries");
+     System.out.println( entriesArray.length() );
+     for ( int i=0; i<entriesArray.length(); i++ ) {
+       try {
+	JSONObject obj = entriesArray.getJSONObject( i );
+        JSONObject resp = obj.getJSONObject( "response" );
+        JSONObject content = resp.getJSONObject( "content" );
+       
+        if ( content.getString( "mimeType" ).equals("image/png") || content.getString( "mimeType" ).equals("image/jpeg") || content.getString( "mimeType" ).equals("image/gif") || content.getString( "mimeType" ).equals("application/x-shockwave-flash")  ) {
+            System.out.println(  content.getString( "mimeType" ) );
+	    JSONObject req = obj.getJSONObject("request");
+            String urlString = req.getString("url").trim();
+            for ( String adKey : adKeys ) {
+	       if ( urlString.toLowerCase().contains(adKey) ) { 	 
+		   try {
+		      stmt.executeUpdate( "INSERT INTO url_list VALUES ( '" + urlString + "' )" );
+                      System.out.println( "INSERT INTO url_list VALUES ( '" + urlString + "' )" );
+                      break;
+                   } catch ( SQLException sqle ) { sqle.printStackTrace(); }   
+                   break;                
+	       }
+	    }    
+        }       
+       } catch ( JSONException jsone ) {
+	   jsone.printStackTrace();
+       }
+     }
+
+     stmt.executeUpdate( "DROP TABLE IF EXISTS unique_urls" );
+     stmt.executeUpdate( "CREATE TABLE unique_urls ( url_string VARCHAR(2048) )" );
+     stmt.executeUpdate( "INSERT INTO unique_urls SELECT DISTINCT url_string FROM url_list WHERE (LOCATE('.js',url_string)=0  AND LOCATE('1x1',url_string)=0 AND LOCATE('1X1',url_string)=0) ORDER BY url_string ASC" );
+
+    } catch ( IOException ioe ) { ioe.printStackTrace(); }
+    catch ( JSONException jsone ) { jsone.printStackTrace(); }
+    catch ( SQLException sqle ) { sqle.printStackTrace(); }     
+   }
+
+    public static void getDBConnection() {
+      try {
+	 Class.forName("org.hsqldb.jdbcDriver");
+         hsqldb = DriverManager.getConnection("jdbc:hsqldb:file:admonitor", "SA", "" );
+         stmt = hsqldb.createStatement();                   
+      } catch ( ClassNotFoundException cnfe ) { cnfe.printStackTrace(); }
+      catch ( SQLException sqle ) { sqle.printStackTrace(); }     
+    }
+
+    public static void closeDBConnection() {
+      try {
+	hsqldb.close();
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }  
+    }
+
+    public static void downloadFiles() {
+      try {
+       ResultSet urls = stmt.executeQuery( "SELECT DISTINCT url_string FROM unique_urls" );
+       ArrayList<String> adUrlList = new ArrayList<String>();
+
+       while ( urls.next() ) {
+	  adUrlList.add( urls.getString(1).trim() );
+       }
+      
+       try {
+	 stmt.executeUpdate( "DROP TABLE IF EXISTS urls_files" );
+         stmt.executeUpdate( "CREATE TABLE urls_files ( url_string VARCHAR(2048), file_name VARCHAR(64) )" );
+       } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+
+       int fileCounter = 0;
+       for ( String adUrl : adUrlList ) {
+         try {
+	   String fileName = "file" + Integer.toString( fileCounter );
+	   String cmdString = "/usr/bin/wget -v --output-document=/root/Desktop/Admonitor/DL/" + fileName + " --tries=3 " + adUrl;
+           System.out.println( cmdString );
+	   Process  p = Runtime.getRuntime().exec( cmdString );
+           p.waitFor();
+           BufferedReader r = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+           String s;
+           while ((s = r.readLine())!=null) {
+	       System.out.println( s );
+           }
+           r.close();
+           stmt.executeUpdate( "INSERT INTO urls_files VALUES ( '" + adUrl + "', '" + fileName + "' )" );
+           System.out.println( "here you are" );
+         } catch ( IOException ioe ) { ioe.printStackTrace(); }
+         catch ( InterruptedException ie ) { ie.printStackTrace(); }
+         catch ( SQLException sqle ) { sqle.printStackTrace(); }
+         fileCounter++;
+       }
+      } catch ( SQLException e ) { e.printStackTrace(); }    
+    }
+
+    public static void getFileTypes() {
+     try {
+      ResultSet fileNames = stmt.executeQuery( "SELECT url_string, file_name FROM urls_files ORDER BY file_name ASC" );
+
+      stmt.executeUpdate( "DROP TABLE IF EXISTS urls_files_types" );
+      stmt.executeUpdate( "CREATE TABLE urls_files_types ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )" );
+
+      while ( fileNames.next() ) {
+	System.out.println( fileNames.getString(2).trim() );
+        String fileName = "/root/Desktop/Admonitor/DL/" + fileNames.getString(2).trim();
+        String cmdString = "/usr/bin/file -bi " + fileName;
+        Process p = Runtime.getRuntime().exec( cmdString );
+        p.waitFor();
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String s;
+        while ((s = r.readLine())!=null) {
+	  try {
+	    stmt.executeUpdate( "INSERT INTO urls_files_types VALUES ( '" + fileNames.getString(1).trim() + "', '" +  fileNames.getString(2).trim() + "', '" + s.trim() + "' )" );
+            System.out.println( s.trim() );
+          } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+        }
+        r.close();     
+      }
+ 
+      try {
+	stmt.executeUpdate( "DROP TABLE IF EXISTS good_content_types" );
+        stmt.executeUpdate( "CREATE TABLE good_content_types ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )" );
+        stmt.executeUpdate( "INSERT INTO good_content_types SELECT * FROM urls_files_types WHERE ( LOCATE('image/jpeg',content_type)!=0 OR LOCATE('application/x-shockwave-flash',content_type)!=0 OR LOCATE('image/gif',content_type)!=0 ) ORDER BY file_name ASC" );
+      
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+     } catch ( Exception ioe ) { ioe.printStackTrace(); }
+    }
+    
+    public static void printGoodContentTypeFiles() {
+      try {
+         ResultSet rs =  stmt.executeQuery( "SELECT * FROM good_content_types WHERE (LOCATE('image/jpeg',content_type)!=0 OR LOCATE('image/gif',content_type)!=0) ORDER BY file_name ASC" );
+         while ( rs.next() ){
+	     System.out.println( "good-content:" + rs.getString(1) );
+         }
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+    }
+
+    public static void getBadImages() {
+      try {
+	stmt.executeUpdate( "DROP TABLE IF EXISTS bad_images" );
+	stmt.executeUpdate( "CREATE TABLE bad_images ( file_name VARCHAR(64) )" );
+        
+        ResultSet rs =  stmt.executeQuery( "SELECT * FROM good_content_types WHERE (LOCATE('image/jpeg',content_type)!=0 OR LOCATE('image/gif',content_type)!=0) ORDER BY file_name ASC" );
+        
+        while ( rs.next() ) {
+	  URL imgUrl = new URL( "file:///root/Desktop/Admonitor/DL/" + rs.getString(2) );
+          System.out.println( "imgs " + rs.getString(2) );
+          BufferedImage img = ImageIO.read( imgUrl );
+          if ( img.getWidth() == 1 || img.getHeight() == 1 || img.getWidth() == 2 || img.getHeight() == 2 ) {
+             try {
+	       stmt.executeUpdate( "INSERT INTO bad_images VALUES ( '" + rs.getString(2) + "' )" );
+               System.out.println( "bad image " + rs.getString(2) );
+             } catch ( SQLException sqle ) { sqle.printStackTrace(); } 
+          }
+          img = null;
+        }
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+      catch ( MalformedURLException murle ) { murle.printStackTrace(); }
+      catch ( IOException ioe ) { ioe.printStackTrace(); }
+    }
+
+    public static void writeAdUrls() {
+      try {
+	 stmt.executeUpdate( "DROP TABLE IF EXISTS ad_urls" );
+	 stmt.executeUpdate( "CREATE TABLE ad_urls ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )" );
+	 ResultSet rs = stmt.executeQuery( "SELECT * FROM good_content_types WHERE file_name NOT IN ( SELECT * FROM bad_images ) ORDER BY file_name ASC" ); 
+          
+         System.out.println( "writing urls " );               
+	 while ( rs.next() ) {
+	  try {
+              stmt.executeUpdate( "INSERT INTO ad_urls VALUES ( '" + rs.getString(1) + "', '" + rs.getString(2) +  "', '" + rs.getString(3) + "' )" );
+              System.out.println( "INSERT INTO ad_urls VALUES ( '" + rs.getString(1) + "', '" + rs.getString(2) +  "', '" + rs.getString(3) + "' )" ); 
+	      System.out.println( "\"" + rs.getString(1) + "\",\"" + rs.getString(2) + "\",\"" + rs.getString(3) + "\"\n" );
+	      } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+         }
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }   
+    }
+
+    public static void getLandingPages( String _url ) {
+      try {
+          ArrayList<String> adUrls = new ArrayList<String>();
+          ArrayList<String> contentTypes = new ArrayList<String>();
+
+	  ResultSet rs = stmt.executeQuery( "SELECT * FROM ad_urls ORDER BY url_string ASC" );
+          while ( rs.next() ) {
+	     System.out.println( "adUrl = " + rs.getString(1) );
+	     adUrls.add( rs.getString(1) );
+             contentTypes.add( rs.getString(3) );
+          }
+
+          Set<String> windows = selena.getWrappedDriver().getWindowHandles();
+          Iterator iter = windows.iterator();
+          winName = "";
+          while (iter.hasNext()) {
+	    winName = (String)iter.next();
+          }          
+          System.out.println( "winName = " + winName );          
+
+          int imgCount = Integer.parseInt( selena.getEval( "var imgCount = 0; var imgList = window.document.getElementsByTagName('img'); for ( var i=0; i<imgList.length; i++ ) { imgList.item(i).setAttribute('id','img'+i); imgCount++; } imgCount;" ).trim() );
+
+          ArrayList<String> imgList = new ArrayList<String>();
+          for ( int i=0; i<imgCount; i++ ) {
+	      imgList.add( selena.getEval("window.document.getElementById('img"+i+"').getAttribute('id')") );
+          }
+
+          int embedCount = Integer.parseInt( selena.getEval( "var embedCount = 0; var embedList = window.document.getElementsByTagName('embed'); for ( var i=0; i<embedList.length; i++ ) { embedList.item(i).setAttribute('id','embed'+i); embedCount++; } embedCount;").trim() );
+
+	  ArrayList<String> embedList = new ArrayList<String>();
+          for ( int i=0; i<embedCount; i++ ) {        
+	      embedList.add( selena.getEval("window.document.getElementById('embed"+i+"').getAttribute('id')") );
+          }
+
+          ArrayList<String> clickPoints = new ArrayList<String>();
+          for ( String imgId : imgList ) {
+  	      clickPoints.add( selena.getEval( "var height = window.document.getElementById( '"+imgId+"' ).height; var width = window.document.getElementById('"+imgId+"' ).width; var top = window.document.getElementById( '"+imgId+"' ).offsetTop + window.screenY; var left = window.document.getElementById('"+imgId+"' ).offsetLeft + window.screenX; var leftPt = Math.floor(left+(width/2)); var topPt = Math.floor(top+(height/2)); var clickPoint = new Array( leftPt, topPt, height ); clickPoint;" ).trim() );
+          }
+          
+          for ( String imgId : imgList ) {
+             
+          }
+
+          for ( String embedId : embedList ) {
+	      clickPoints.add( selena.getEval( "var height = window.document.getElementById('"+embedId+"').height; var width = window.document.getElementById('"+embedId+"').width; var top = window.document.getElementById('"+embedId+"').offsetTop + window.screenY; var left = window.document.getElementById('"+embedId+"').offsetLeft + window.screenX; var leftPt = Math.floor(left+(width/2)); var topPt = Math.floor(top+(height/2)); var clickPoint = new Array( leftPt, topPt, height ); clickPoint;" ).toString() );
+          }
+
+	  // BufferedWriter tWriter = null;
+          for ( int i=0; i<contentTypes.size(); i++ ) {
+	     try { 
+		 if ( contentTypes.get(i).equals("image/png") || contentTypes.get(i).equals("image/jpeg") || contentTypes.get(i).equals("image/gif") ) {
+		     selena.click("//img[@src='"+adUrls.get(i).trim()+"']");
+               
+                     parseTrafico();     
+		 }
+                 else if ( contentTypes.get(i).equals("application/x-shockwave-flash") ) {
+                    
+                 }
+	     } catch ( SeleniumException se ) { System.out.println( "Selenium Exception" ); }
+	  }
+          
+          int iframeCount = Integer.parseInt( selena.getEval( "var iframeCount = 0; var iframeList = window.document.getElementsByTagName('iframe'); for ( var i=0; i<iframeList.length; i++ ) { iframeList.item(i).setAttribute('id','iframe'+i); iframeCount++; } iframeCount;" ).trim() );
+          System.out.println( "iframe count = " + iframeCount );
+
+          ArrayList<String> iframeSrcList = new ArrayList<String>();
+          for ( int i=0; i<iframeCount; i++ ) {
+	      String iframeSrc = selena.getEval( "window.document.getElementById('iframe"+i+"').getAttribute('src');" );
+	      iframeSrcList.add( iframeSrc );
+          }
+
+          for ( String iframeSrc : iframeSrcList ) {
+	     selena.selectWindow( winName );
+             System.out.println( "doing get frame" + iframeSrc + ", " + winName );            
+	     break;
+          }
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+    }
+
+    public static void parseTrafico() {
+      try {
+	 stmt.executeUpdate( "DROP TABLE IF EXISTS referers" );
+         stmt.executeUpdate( "CREATE TABLE referers ( ref_url VARCHAR(2048) )" );
+
+          har = server.getHar();
+          har.writeTo( new FileOutputStream( "/tmp/trafico.har" ) ); 
+
+         ResultSet rs = stmt.executeQuery( "SELECT ref_url, COUNT(*) AS cnt FROM referers WHERE RIGHT(ref_url,3)!='css' GROUP BY ref_url ORDER BY cnt DESC LIMIT 1" );
+         String refUrl = "";
+         while ( rs.next() ) {
+	    refUrl = rs.getString(1).trim();        
+         }
+         
+         System.out.println( "referer url = " + refUrl );
+      } catch ( Exception e ) { e.printStackTrace(); }
+    }
+
+
+}

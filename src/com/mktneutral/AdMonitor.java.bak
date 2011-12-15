@@ -1,0 +1,647 @@
+package com.mktneutral;
+
+import org.openqa.selenium.firefox.FirefoxDriver;
+import au.com.bytecode.opencsv.CSVReader;
+import java.io.IOException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.File;
+import javax.imageio.ImageIO;
+import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.regex.Pattern;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.net.URL;
+import java.awt.image.BufferedImage;
+import java.awt.Robot;
+import java.awt.AWTException;
+import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
+import java.net.MalformedURLException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver.TargetLocator;
+import org.openqa.selenium.WebDriverBackedSelenium;
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.Keys;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.DOMReader;
+import org.dom4j.Node;
+import org.dom4j.Element;
+
+public class AdMonitor { 
+    private static SeleniumServer selServer;
+    //private static DefaultSelenium selena;
+    private static WebDriverBackedSelenium selena;
+    private static BufferedWriter trafficWriter;    
+    // private static BufferedWriter adUrlWriter;
+    private static String xmlFileName;
+    private static ArrayList<String> adKeys;
+    private static Connection hsqldb;
+    private static Statement stmt;
+    private static String winName;
+    private static int fullScreen = 0;
+    private static Robot bot;
+
+    public static void main( String[] args ) {
+      try {
+	 CSVReader listReader = new CSVReader( new FileReader( "./inputfile_sample.txt" ),'\t' );
+     
+         CSVReader adListReader = new CSVReader( new FileReader( "./adfilter_sample.txt" ),'\t' );
+         List<String[]> adRows = (List<String[]>) adListReader.readAll();
+
+         java.sql.Date now = new java.sql.Date( (new java.util.Date()).getTime() );
+         String dateString = now.toString();
+         bot = new Robot();
+         xmlFileName = "NetworkTraffic" + dateString + ".xml";
+
+         trafficWriter = new BufferedWriter( new FileWriter(  "/root/Desktop/apache-tomcat-6.0.33/" + xmlFileName ) );
+        
+         adKeys = new ArrayList<String>();
+ 
+
+	 for ( String[] row : adRows ) {
+	    adKeys.add( row[0].trim() );
+	 }
+
+         //startServer();
+         getPageTraffic( args[0].trim() );
+         getDBConnection();
+         parseXmlTrafficData();
+
+         downloadFiles();
+         getFileTypes();
+         getBadImages();
+         writeAdUrls();
+         printGoodContentTypeFiles();
+         getLandingPages( args[0].trim() );
+         closeDBConnection();
+      }
+      catch ( Exception e ) { e.printStackTrace(); }
+    }    
+
+    public static void startServer() {
+       try {
+         selServer = new SeleniumServer();
+         selServer.start();
+       } catch ( Exception e ) { e.printStackTrace(); }
+    }
+
+    public static void getPageTraffic( String _url ) {
+      try {
+	  //selena = new DefaultSelenium( "localhost", 4444, "*firefox", _url );
+       FirefoxDriver driver = new FirefoxDriver();
+       selena = new WebDriverBackedSelenium( driver, "http://ec2-50-18-70-255.us-west-1.compute.amazonaws.com:2080/pensjonat/test3.html" );
+       // selena.start("captureNetworkTraffic=true");
+       selena.open( _url );
+       selena.windowMaximize();
+       /// trafficWriter.write( selena.captureNetworkTraffic("xml") );
+       trafficWriter.close();
+      } catch ( Exception e ) { e.printStackTrace(); }
+    }
+
+    public static void stopServer() {
+       selServer.stop();
+    }
+
+    public static void parseXmlTrafficData() {
+      try {
+        Document xmlDoc = (new SAXReader()).read( "file:///root/Desktop/apache-tomcat-6.0.33/" + xmlFileName );
+        List<Node> entryList = xmlDoc.selectNodes("//entry[@method='GET']");
+        List<Node> postList = xmlDoc.selectNodes("//entry[@method='POST']");
+        entryList.addAll( postList );
+
+        for ( Node myNode : entryList ) {
+	  Element ele = (Element)(myNode);
+	  if ( ele.attributeValue("method").equals("GET") || ele.attributeValue("method").equals("GET") ) {
+	    String urlString = ele.attributeValue("url").trim();
+            for ( String adKey : adKeys ) {
+		if ( urlString.toLowerCase().contains(adKey) ) {
+		List<Node> headers = ele.selectNodes("//header[@name='Accept']");
+                for ( Node header : headers ) {
+		  Element hElement = (Element)(header);
+		  if ( hElement.attributeValue("name").equals("Accept") ) {
+		   try {
+		      stmt.executeUpdate( "INSERT INTO url_list VALUES ( '" + urlString + "' )" );   
+                      break;
+                   } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+                  }
+                }
+                   break;                
+              }  
+	    }
+	  }      
+        }
+
+        stmt.executeUpdate( "DROP TABLE IF EXISTS unique_urls" );
+        stmt.executeUpdate( "CREATE TABLE unique_urls ( url_string VARCHAR(2048) )" );
+        stmt.executeUpdate( "INSERT INTO unique_urls SELECT DISTINCT url_string FROM url_list WHERE (LOCATE('.js',url_string)=0  AND LOCATE('1x1',url_string)=0 AND LOCATE('1X1',url_string)=0) ORDER BY url_string ASC" );
+  
+      } catch ( Exception e ) { e.printStackTrace(); }
+    }
+
+    public static void getDBConnection() {
+      try {
+	 Class.forName("org.hsqldb.jdbcDriver");
+         hsqldb = DriverManager.getConnection("jdbc:hsqldb:file:admonitor", "SA", "" );
+         stmt = hsqldb.createStatement();
+         stmt.executeUpdate("DROP TABLE IF EXISTS url_list");
+         stmt.executeUpdate("CREATE TABLE url_list ( url_string VARCHAR(2048) )");                   
+      } catch ( ClassNotFoundException cnfe ) { cnfe.printStackTrace(); }
+      catch ( SQLException sqle ) { sqle.printStackTrace(); }     
+    }
+
+    public static void closeDBConnection() {
+      try {
+	hsqldb.close();
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }  
+    }
+
+    public static void downloadFiles() {
+      try {
+       ResultSet urls = stmt.executeQuery( "SELECT DISTINCT url_string FROM unique_urls ORDER BY url_string ASC" );
+       ArrayList<String> adUrlList = new ArrayList<String>();
+
+       while ( urls.next() ) {
+	  adUrlList.add( urls.getString(1).trim() );
+       }
+      
+       try {
+	 stmt.executeUpdate( "DROP TABLE IF EXISTS urls_files" );
+         stmt.executeUpdate( "CREATE TABLE urls_files ( url_string VARCHAR(2048), file_name VARCHAR(64) )" );
+       } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+
+       int fileCounter = 0;
+       for ( String adUrl : adUrlList ) {
+         try {
+	   String fileName = "file" + Integer.toString( fileCounter );
+	   String cmdString = "/usr/bin/wget -v --output-document=/root/Desktop/Admonitor/DL/" + fileName + " --tries=3 " + adUrl;
+           System.out.println( cmdString );
+	   Process  p = Runtime.getRuntime().exec( cmdString );
+           p.waitFor();
+           BufferedReader r = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+           String s;
+           while ((s = r.readLine())!=null) {
+	       System.out.println( s );
+           }
+           r.close();
+           stmt.executeUpdate( "INSERT INTO urls_files VALUES ( '" + adUrl + "', '" + fileName + "' )" );
+           System.out.println( "here you are" );
+         } catch ( IOException ioe ) { ioe.printStackTrace(); }
+         catch ( InterruptedException ie ) { ie.printStackTrace(); }
+         catch ( SQLException sqle ) { sqle.printStackTrace(); }
+         fileCounter++;
+       }
+      } catch ( SQLException e ) { e.printStackTrace(); }    
+    }
+
+    public static void getFileTypes() {
+     try {
+      ResultSet fileNames = stmt.executeQuery( "SELECT url_string, file_name FROM urls_files ORDER BY file_name ASC" );
+
+      stmt.executeUpdate( "DROP TABLE IF EXISTS urls_files_types" );
+      stmt.executeUpdate( "CREATE TABLE urls_files_types ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )" );
+
+      while ( fileNames.next() ) {
+	System.out.println( fileNames.getString(2).trim() );
+        String fileName = "/root/Desktop/Admonitor/DL/" + fileNames.getString(2).trim();
+        String cmdString = "/usr/bin/file -bi " + fileName;
+        Process p = Runtime.getRuntime().exec( cmdString );
+        p.waitFor();
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String s;
+        while ((s = r.readLine())!=null) {
+	  try {
+	    stmt.executeUpdate( "INSERT INTO urls_files_types VALUES ( '" + fileNames.getString(1).trim() + "', '" +  fileNames.getString(2).trim() + "', '" + s.trim() + "' )" );
+            System.out.println( s.trim() );
+          } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+        }
+        r.close();     
+      }
+ 
+      try {
+	stmt.executeUpdate( "DROP TABLE IF EXISTS good_content_types" );
+        stmt.executeUpdate( "CREATE TABLE good_content_types ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )" );
+        stmt.executeUpdate( "INSERT INTO good_content_types SELECT * FROM urls_files_types WHERE ( LOCATE('image/jpeg',content_type)!=0 OR LOCATE('application/x-shockwave-flash',content_type)!=0 OR LOCATE('image/gif',content_type)!=0 ) ORDER BY file_name ASC" );
+      
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+     } catch ( Exception ioe ) { ioe.printStackTrace(); }
+    }
+    
+    public static void printGoodContentTypeFiles() {
+      try {
+         ResultSet rs =  stmt.executeQuery( "SELECT * FROM good_content_types WHERE (LOCATE('image/jpeg',content_type)!=0 OR LOCATE('image/gif',content_type)!=0) ORDER BY file_name ASC" );
+         while ( rs.next() ){
+	     System.out.println( "good-content:" + rs.getString(1) );
+         }
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+    }
+
+    public static void getBadImages() {
+      try {
+	stmt.executeUpdate( "DROP TABLE IF EXISTS bad_images" );
+	stmt.executeUpdate( "CREATE TABLE bad_images ( file_name VARCHAR(64) )" );
+        
+        ResultSet rs =  stmt.executeQuery( "SELECT * FROM good_content_types WHERE (LOCATE('image/jpeg',content_type)!=0 OR LOCATE('image/gif',content_type)!=0) ORDER BY file_name ASC" );
+        
+        while ( rs.next() ) {
+	  URL imgUrl = new URL( "file:///root/Desktop/Admonitor/DL/" + rs.getString(2) );
+          System.out.println( "imgs " + rs.getString(2) );
+          BufferedImage img = ImageIO.read( imgUrl );
+          if ( img.getWidth() == 1 || img.getHeight() == 1 || img.getWidth() == 2 || img.getHeight() == 2 ) {
+             try {
+	       stmt.executeUpdate( "INSERT INTO bad_images VALUES ( '" + rs.getString(2) + "' )" );
+               System.out.println( "bad image " + rs.getString(2) );
+             } catch ( SQLException sqle ) { sqle.printStackTrace(); } 
+          }
+          img = null;
+        }
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+      catch ( MalformedURLException murle ) { murle.printStackTrace(); }
+      catch ( IOException ioe ) { ioe.printStackTrace(); }
+    }
+
+    public static void writeAdUrls() {
+      try {
+	 stmt.executeUpdate( "DROP TABLE IF EXISTS ad_urls" );
+	 stmt.executeUpdate( "CREATE TABLE ad_urls ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )" );
+	 ResultSet rs = stmt.executeQuery( "SELECT * FROM good_content_types WHERE file_name NOT IN ( SELECT * FROM bad_images ) ORDER BY file_name ASC" ); 
+          
+         System.out.println( "writing urls " );               
+	 while ( rs.next() ) {
+	  try {
+              stmt.executeUpdate( "INSERT INTO ad_urls VALUES ( '" + rs.getString(1) + "', '" + rs.getString(2) +  "', '" + rs.getString(3) + "' )" );
+              System.out.println( "INSERT INTO ad_urls VALUES ( '" + rs.getString(1) + "', '" + rs.getString(2) +  "', '" + rs.getString(3) + "' )" ); 
+	      System.out.println( "\"" + rs.getString(1) + "\",\"" + rs.getString(2) + "\",\"" + rs.getString(3) + "\"\n" );
+	      } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+         }
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }   
+    }
+
+    public static void getLandingPages( String _url ) {
+      try {
+          ArrayList<String> adUrls = new ArrayList<String>();
+          ArrayList<String> contentTypes = new ArrayList<String>();
+
+	  ResultSet rs = stmt.executeQuery( "SELECT * FROM ad_urls ORDER BY url_string ASC" );
+          while ( rs.next() ) {
+	     System.out.println( "adUrl = " + rs.getString(1) );
+	     adUrls.add( rs.getString(1) );
+             contentTypes.add( rs.getString(3) );
+          }
+
+          Set<String> windows = selena.getWrappedDriver().getWindowHandles();
+          Iterator iter = windows.iterator();
+          winName = "";
+          while (iter.hasNext()) {
+	    winName = (String)iter.next();
+          }
+
+          bot.mouseMove(350,350);
+          bot.delay(200);
+          bot.mousePress( InputEvent.BUTTON3_MASK );
+          bot.delay( 200 );
+          bot.mouseRelease( InputEvent.BUTTON3_MASK );
+          bot.delay( 200 );
+          if ( fullScreen == 0 ) {
+            selena.windowMaximize();
+            bot.keyPress( java.awt.event.KeyEvent.VK_F11 );
+            bot.delay( 50 );
+            bot.keyRelease( java.awt.event.KeyEvent.VK_F11 );
+            bot.delay( 3000 );
+            bot.delay( 200 );
+            fullScreen = 1;
+          }
+          bot.mousePress( InputEvent.BUTTON3_MASK );
+          bot.delay( 200 );
+          bot.mouseRelease( InputEvent.BUTTON3_MASK );
+          bot.delay( 300 );         
+         
+          int screenHeight = Integer.parseInt(selena.getEval( "window.outerHeight;" ).trim());
+
+          int imgCount = Integer.parseInt(selena.getEval( "var imgCount = 0; var imgList = window.document.getElementsByTagName('img'); for ( var i=0; i<imgList.length; i++ ) { imgList.item(i).setAttribute('id','img'+i); imgCount++; } imgCount;" ).trim());
+
+          ArrayList<String> imgList = new ArrayList<String>();
+          for ( int i=0; i<imgCount; i++ ) {
+	     imgList.add( selena.getEval("window.document.getElementById('img"+i+"').getAttribute('id')") );
+          }
+
+          int embedCount = Integer.parseInt(selena.getEval( "var embedCount = 0; var embedList = window.document.getElementsByTagName('embed'); for ( var i=0; i<embedList.length; i++ ) { embedList.item(i).setAttribute('id','embed'+i); embedCount++; } embedCount;" ).trim());
+
+	  ArrayList<String> embedList = new ArrayList<String>();
+          for ( int i=0; i<embedCount; i++ ) {        
+             embedList.add( selena.getEval("window.document.getElementById('embed"+i+"').getAttribute('id')") );
+          }
+
+          ArrayList<String> clickPoints = new ArrayList<String>();
+          for ( String imgId : imgList ) {
+	    clickPoints.add( selena.getEval( "var height = window.document.getElementById( '"+imgId+"' ).height; var width = window.document.getElementById('"+imgId+"' ).width; var top = window.document.getElementById( '"+imgId+"' ).offsetTop + window.screenY; var left = window.document.getElementById('"+imgId+"' ).offsetLeft + window.screenX; var leftPt = Math.floor(left+(width/2)); var topPt = Math.floor(top+(height/2)); var clickPoint = new Array( leftPt, topPt, height ); clickPoint;" ) );
+          }
+          
+          for ( String embedId : embedList ) {
+	    clickPoints.add( selena.getEval( "var height = window.document.getElementById( '"+embedId+"' ).height; var width = window.document.getElementById('"+embedId+"' ).width; var top = window.document.getElementById( '"+embedId+"' ).offsetTop + window.screenY; var left = window.document.getElementById('"+embedId+"' ).offsetLeft + window.screenX; var leftPt = Math.floor(left+(width/2)); var topPt = Math.floor(top+(height/2)); var clickPoint = new Array( leftPt, topPt, height ); clickPoint;" ) );
+          }
+
+          int maxVerticalPos = screenHeight;
+          for ( String clickPt : clickPoints ) {
+           clickPt = clickPt.replaceAll(" ","");
+           clickPt = clickPt.replaceAll(Pattern.quote("["),"");
+           clickPt = clickPt.replaceAll(Pattern.quote("]"),"");
+           String[] clickPoint = clickPt.split(",");      
+           try {
+            if ( Integer.parseInt(clickPoint[1].trim()) > maxVerticalPos ) {
+	     maxVerticalPos = Integer.parseInt(clickPoint[1].trim())+Integer.parseInt(clickPoint[2].trim())/2;
+            }
+           } catch ( NumberFormatException nfe ) { nfe.printStackTrace(); }
+           catch ( ArrayIndexOutOfBoundsException nfe ) { nfe.printStackTrace(); }
+          }
+
+          BufferedWriter tWriter = null;
+          for ( int i=0; i<contentTypes.size(); i++ ) {            
+            try {
+              tWriter = new BufferedWriter( new FileWriter("/tmp/trafico.xml") );
+
+              if ( contentTypes.get(i).equals("image/jpeg") || contentTypes.get(i).equals("image/png") || contentTypes.get(i).equals("image/gif") ) {                  
+	         System.out.println( "contentType = " + contentTypes.get(i) );
+
+                 String clickPoint = selena.getEval( "var imgList = window.document.getElementsByTagName('img'); var clickPoint = new Array(); for ( var i=0; i<imgList.length; i++ ) { var src = imgList.item(i).getAttribute('src'); if ( src == '"+adUrls.get(i)+"' ) { var height = imgList.item(i).height; var width = imgList.item(i).width; var top = imgList.item(i).offsetTop + window.screenY; var left = imgList.item(i).offsetLeft + window.screenX; var leftPt = Math.floor(left+(width/2)); var topPt = Math.floor(top+(height/2)); clickPoint = new Array( leftPt, topPt, height ); imgList.item(i).click(); } } clickPoint;" );  
+                 System.out.println( clickPoint );
+ 
+                 try {
+		   selena.controlKeyDown();
+                   selena.click("//img[@src='"+adUrls.get(i)+"']");
+		   selena.controlKeyUp();      
+                   System.out.println( "did click" );
+                 } catch ( SeleniumException se ) { se.printStackTrace(); }
+
+	      }
+              else if ( contentTypes.get(i).equals("application/x-shockwave-flash") ) {                  
+                System.out.println( "contentType = " + contentTypes.get(i) );
+
+                 String clickPt = selena.getEval( "var embedList = window.document.getElementsByTagName('embed'); var clickPoint = new Array(); for ( var i=0; i<embedList.length; i++ ) { var src = embedList.item(i).getAttribute('src'); if ( src == '"+adUrls.get(i)+"' ) { var height = embedList.item(i).height; var width = embedList.item(i).width; var top = embedList.item(i).offsetTop + window.screenY; var left = embedList.item(i).offsetLeft + window.screenX; var leftPt = Math.floor(left+(width/2)); var topPt = Math.floor(top+(height/2)); clickPoint = new Array( leftPt, topPt, height ); embedList.item(i).click(); } } clickPoint;" );  
+                 System.out.println( clickPt );
+
+                 try {
+	          int maxPgDownCount = 0;
+	          if ( maxVerticalPos < screenHeight ) {
+	            maxPgDownCount = 0;
+                  }
+                  else {
+                    maxPgDownCount = (new Double(Math.floor((maxVerticalPos-(screenHeight-41))/(screenHeight-41)))).intValue();
+                  }
+                  int lastPgDown = maxVerticalPos - maxPgDownCount*(screenHeight-41) - screenHeight;
+
+                  clickPt = clickPt.replaceAll(" ","");
+                  clickPt = clickPt.replaceAll(Pattern.quote("["),"");
+                  clickPt = clickPt.replaceAll(Pattern.quote("]"),"");
+                  String[] clickPoint = clickPt.split(",");      
+
+                  System.out.println( "maxPgDown = " + maxPgDownCount );
+
+                  int pageDownCount = 0;
+        
+                  int verticalPos = Integer.parseInt(clickPoint[1].trim());
+                  for ( int j=0; j<maxPgDownCount+1; j++ ) {
+	            verticalPos = (Integer.parseInt(clickPoint[1].trim()) - (screenHeight-41)*j);
+                    if ( verticalPos < screenHeight ) {
+                      break;
+                    }
+                    pageDownCount++;
+		  }
+
+                  System.out.println( clickPt + "," + verticalPos );
+
+                  if ( verticalPos > screenHeight ) {
+	            bot.keyPress( KeyEvent.VK_END );
+                    bot.delay( 200 );
+                    bot.keyRelease( KeyEvent.VK_END );
+	            verticalPos = (Integer.parseInt(clickPoint[1].trim())) - maxPgDownCount*(screenHeight-41) - lastPgDown;
+                    System.out.println( "lastPgDown =" + lastPgDown + "verticalPos = " + verticalPos ); 
+                    doClick( bot, Integer.parseInt(clickPoint[0].trim()), verticalPos );
+		  }
+                  else {
+                    for ( int j=0; j<pageDownCount; j++ ) {
+	              bot.mouseMove(1,1);
+                      bot.delay(200);
+                      bot.mousePress( InputEvent.BUTTON1_MASK );
+                      bot.delay( 400 );
+                      bot.mouseRelease( InputEvent.BUTTON1_MASK );
+                      bot.delay( 200 );
+                      bot.keyPress( KeyEvent.VK_PAGE_DOWN );
+                      bot.delay( 400 );
+                      bot.keyRelease( KeyEvent.VK_PAGE_DOWN ); 
+                      System.out.println( "you executed the page downs" );         	
+		    }
+                    doClick( bot, Integer.parseInt(clickPoint[0].trim()), verticalPos );
+		  }
+		 } catch ( NumberFormatException nfe ) { nfe.printStackTrace(); }
+	      }
+	      //tWriter.write( selena.captureNetworkTraffic("xml") );
+              tWriter.close();  
+              //parseTrafico();     
+	    } catch ( SeleniumException se ) { se.printStackTrace(); }
+             catch ( NullPointerException npe ) { npe.printStackTrace(); }
+             catch ( NumberFormatException nfe ) { nfe.printStackTrace(); }
+             catch ( ArrayIndexOutOfBoundsException ae ) { ae.printStackTrace(); }
+	  }
+          
+          int iframeCount = Integer.parseInt(selena.getEval( "var iframeCount = 0; var iframeList = window.document.getElementsByTagName('iframe'); for ( var i=0; i<iframeList.length; i++ ) { iframeList.item(i).setAttribute('id','iframe'+i); iframeCount++; } iframeCount;" ).trim());
+          System.out.println( "iframe count = " + iframeCount );
+
+          ArrayList<String> iframeSrcList = new ArrayList<String>();
+          for ( int i=0; i<iframeCount; i++ ) {
+	    String iframeSrc = selena.getEval( "window.document.getElementById('iframe"+i+"').getAttribute('src');" );
+            getFrame( iframeSrc, contentTypes, adUrls );
+          }
+      
+      } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+      catch ( IOException ioe ) { ioe.printStackTrace(); }
+      //catch ( AWTException awte ) { awte.printStackTrace(); }     
+    }
+
+    public static void parseTrafico() {
+      try {
+	 stmt.executeUpdate( "DROP TABLE IF EXISTS referers" );
+         stmt.executeUpdate( "CREATE TABLE referers ( ref_url VARCHAR(2048) )" );
+
+	 Document xmlDoc = (new SAXReader()).read( "file:///tmp/trafico.xml" );
+         List<Node> refererList = xmlDoc.selectNodes("//header[@name='Referer']");
+
+         for ( Node node : refererList ) {
+	     String refererName = node.getText().trim();
+             stmt.executeUpdate( "INSERT INTO referers VALUES ( '" + refererName + "' )" );
+         }
+
+         ResultSet rs = stmt.executeQuery( "SELECT ref_url, COUNT(*) AS cnt FROM referers WHERE RIGHT(ref_url,3)!='css' GROUP BY ref_url ORDER BY cnt DESC LIMIT 1" );
+         String refUrl = "";
+         while ( rs.next() ) {
+	    refUrl = rs.getString(1).trim();        
+         }
+         
+         System.out.println( "referer url = " + refUrl );
+      } catch ( Exception e ) { e.printStackTrace(); }
+    }
+
+    public static void doClick( Robot bot, int leftPos, int verticalPos ) {
+     try {
+       bot.mouseMove( leftPos, verticalPos );
+       bot.delay(200);
+       bot.keyPress( KeyEvent.VK_CONTROL );
+       bot.delay( 200 );
+       bot.mousePress( InputEvent.BUTTON1_MASK );
+       bot.delay( 400 );
+       bot.mouseRelease( InputEvent.BUTTON1_MASK );
+       bot.delay( 200 );
+       bot.delay( 4000 );
+       bot.keyRelease( KeyEvent.VK_CONTROL );
+      
+       selena.selectWindow( winName );
+
+       bot.delay( 200 );
+       bot.mouseMove(1,1);
+       bot.delay(200);
+       bot.mousePress( InputEvent.BUTTON1_MASK );
+       bot.delay( 200 );
+       bot.mouseRelease( InputEvent.BUTTON1_MASK );
+       bot.delay( 200 );
+       bot.keyPress( KeyEvent.VK_HOME );
+       bot.delay( 200 );
+       bot.keyRelease( KeyEvent.VK_HOME );
+       bot.delay( 1500 ); 
+
+     } catch ( Exception awte ) { awte.printStackTrace(); }
+    }
+
+    public static void getFrame( String _url, ArrayList<String> _contentTypes, ArrayList<String> _adUrls ) {
+      selena.open( _url ); 
+      System.out.println( "opened the frame" );
+
+       bot.mouseMove(350,350);
+       bot.delay(200);
+       bot.mousePress( InputEvent.BUTTON3_MASK );
+       bot.delay( 200 );
+       bot.mouseRelease( InputEvent.BUTTON3_MASK );
+       bot.delay( 200 );
+       if ( fullScreen == 0 ) {
+          selena.windowMaximize();
+          bot.keyPress( java.awt.event.KeyEvent.VK_F11 );
+          bot.delay( 50 );
+          bot.keyRelease( java.awt.event.KeyEvent.VK_F11 );
+          bot.delay( 3000 );
+          bot.delay( 200 );
+          fullScreen = 1;
+       }
+       bot.mousePress( InputEvent.BUTTON3_MASK );
+       bot.delay( 200 );
+       bot.mouseRelease( InputEvent.BUTTON3_MASK );
+       bot.delay( 300 );         
+         
+       int screenHeight = Integer.parseInt(selena.getEval( "window.outerHeight;" ).trim());
+
+       int embedCount = Integer.parseInt(selena.getEval( "var embedCount = 0; var embedList = window.document.getElementsByTagName('embed'); for ( var i=0; i<embedList.length; i++ ) { embedList.item(i).setAttribute('id','embed'+i); embedCount++; } embedCount;" ).trim());
+
+       ArrayList<String> embedList = new ArrayList<String>();
+       for ( int i=0; i<embedCount; i++ ) {        
+          embedList.add( selena.getEval("window.document.getElementById('embed"+i+"').getAttribute('id')") );
+       }
+
+       ArrayList<String> clickPoints = new ArrayList<String>();
+       for ( String embedId : embedList ) {
+	    clickPoints.add( selena.getEval( "var height = window.document.getElementById( '"+embedId+"' ).height; var width = window.document.getElementById('"+embedId+"' ).width; var top = window.document.getElementById( '"+embedId+"' ).offsetTop + window.screenY; var left = window.document.getElementById('"+embedId+"' ).offsetLeft + window.screenX; var leftPt = Math.floor(left+(width/2)); var topPt = Math.floor(top+(height/2)); var clickPoint = new Array( leftPt, topPt, height ); clickPoint;" ) );
+       }
+
+       int maxVerticalPos = screenHeight;
+       for ( String clickPt : clickPoints ) {
+         clickPt = clickPt.replaceAll(" ","");
+         clickPt = clickPt.replaceAll(Pattern.quote("["),"");
+         clickPt = clickPt.replaceAll(Pattern.quote("]"),"");
+         String[] clickPoint = clickPt.split(",");      
+         try {
+           if ( Integer.parseInt(clickPoint[1].trim()) > maxVerticalPos ) {
+	     maxVerticalPos = Integer.parseInt(clickPoint[1].trim())+Integer.parseInt(clickPoint[2].trim())/2;
+           }
+	 } catch ( NumberFormatException nfe ) { nfe.printStackTrace(); }
+         catch ( ArrayIndexOutOfBoundsException nfe ) { nfe.printStackTrace(); }
+       }
+
+       for ( int j=0; j<_contentTypes.size(); j++ ) {
+         if ( _contentTypes.get(j).equals("application/x-shockwave-flash") ) {                  
+             System.out.println( "contentType = " + _contentTypes.get(j) );
+
+             String clickPt = selena.getEval( "var embedList = window.document.getElementsByTagName('embed'); var clickPoint = new Array(); for ( var i=0; i<embedList.length; i++ ) { var src = embedList.item(i).getAttribute('src'); if ( src == '"+_adUrls.get(j)+"' ) { var height = embedList.item(i).height; var width = embedList.item(i).width; var top = embedList.item(i).offsetTop + window.screenY; var left = embedList.item(i).offsetLeft + window.screenX; var leftPt = Math.floor(left+(width/2)); var topPt = Math.floor(top+(height/2)); clickPoint = new Array( leftPt, topPt, height ); embedList.item(i).click(); } } clickPoint;" );  
+             System.out.println( clickPt );
+
+             try {
+	       int maxPgDownCount = 0;
+	       if ( maxVerticalPos < screenHeight ) {
+	          maxPgDownCount = 0;
+               }
+               else {
+                 maxPgDownCount = (new Double(Math.floor((maxVerticalPos-(screenHeight-41))/(screenHeight-41)))).intValue();
+               }
+               int lastPgDown = maxVerticalPos - maxPgDownCount*(screenHeight-41) - screenHeight;
+
+               clickPt = clickPt.replaceAll(" ","");
+               clickPt = clickPt.replaceAll(Pattern.quote("["),"");
+               clickPt = clickPt.replaceAll(Pattern.quote("]"),"");
+               String[] clickPoint = clickPt.split(",");      
+
+               System.out.println( "maxPgDown = " + maxPgDownCount );
+
+               int pageDownCount = 0;
+        
+               int verticalPos = Integer.parseInt(clickPoint[1].trim());
+               for ( int k=0; k<maxPgDownCount+1; k++ ) {
+	          verticalPos = (Integer.parseInt(clickPoint[1].trim()) - (screenHeight-41)*k);
+                  if ( verticalPos < screenHeight ) {
+                    break;
+                  }
+                  pageDownCount++;
+	       }
+
+               System.out.println( clickPt + "," + verticalPos );
+
+               if ( verticalPos > screenHeight ) {
+	          bot.keyPress( KeyEvent.VK_END );
+                  bot.delay( 200 );
+                  bot.keyRelease( KeyEvent.VK_END );
+	          verticalPos = (Integer.parseInt(clickPoint[1].trim())) - maxPgDownCount*(screenHeight-41) - lastPgDown;
+                  System.out.println( "lastPgDown =" + lastPgDown + "verticalPos = " + verticalPos ); 
+                  doClick( bot, Integer.parseInt(clickPoint[0].trim()), verticalPos );
+	       }
+               else {
+                 for ( int k=0; k<pageDownCount; k++ ) {
+	           bot.mouseMove(1,1);
+                   bot.delay(200);
+                   bot.mousePress( InputEvent.BUTTON1_MASK );
+                   bot.delay( 400 );
+                   bot.mouseRelease( InputEvent.BUTTON1_MASK );
+                   bot.delay( 200 );
+                   bot.keyPress( KeyEvent.VK_PAGE_DOWN );
+                   bot.delay( 400 );
+                   bot.keyRelease( KeyEvent.VK_PAGE_DOWN ); 
+                   System.out.println( "you executed the page downs" );         	
+		 }
+                 doClick( bot, Integer.parseInt(clickPoint[0].trim()), verticalPos );
+	       }
+	     } catch ( NumberFormatException nfe ) { nfe.printStackTrace(); }
+             catch ( ArrayIndexOutOfBoundsException ae ) { ae.printStackTrace(); }
+	 }         
+       }
+    }
+}
