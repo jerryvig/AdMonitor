@@ -3,12 +3,9 @@ package com.mktneutral;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import au.com.bytecode.opencsv.CSVReader;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.FileOutputStream;
 import javax.imageio.ImageIO;
@@ -51,23 +48,22 @@ public class AdMonitor {
     private static ArrayList<String> adUrls;
     private static ArrayList<String> contentTypes;    
     private static ArrayList<String> fileNames;
-    private static List<String[]> adRows;
-    private static List<String[]> listRows;
 
     public static void main( String[] args ) {
       try {
+	 // CSVReader listReader = new CSVReader( new FileReader( "./inputfile_sample.txt" ),'\t' );     
+         CSVReader adListReader = new CSVReader( new FileReader( "./adfilter_sample.txt" ),'\t' );
+         List<String[]> adRows = (List<String[]>) adListReader.readAll();
          String dateString  = (new java.sql.Date( (new java.util.Date()).getTime() )).toString();
          harFileName = "/tmp/NetworkTraffic" + dateString + ".har";
         
-         readLists(); 
-
          adKeys = new ArrayList<String>(); 
 	 for ( String[] row : adRows ) {
 	    adKeys.add( row[0].trim() );
 	 }
 
          startServer();
-         getPageTraffic( listRows.get(1)[0].trim() );
+         getPageTraffic( args[0].trim() );
          getDBConnection();         
          parseJSONTraffic();
          downloadFiles();
@@ -77,9 +73,9 @@ public class AdMonitor {
          
          writeAdUrls();                 
          // printGoodContentTypeFiles();
-         getLandingPages( listRows.get(1)[0].trim() ); //here
+         getLandingPages( args[0].trim() ); //here
 
-         showResults();
+         // showResults();
          closeDBConnection();
 
          stopServer();        
@@ -88,19 +84,6 @@ public class AdMonitor {
 
          System.out.println( "End of main." );    
       } catch ( Exception e ) { e.printStackTrace(); }
-    }
-
-    public static void readLists() {
-      try {
-        CSVReader listReader = new CSVReader( new FileReader( "./inputfile_sample.txt" ),'\t' );
-        CSVReader adListReader = new CSVReader( new FileReader( "./adfilter_sample.txt" ),'\t' );
-        adRows = (List<String[]>) adListReader.readAll();
-        listRows = (List<String[]>) listReader.readAll();
-        listReader.close();
-        adListReader.close();
-	// System.out.println( listRows.get(1)[0].trim() );
-      } catch ( FileNotFoundException fnfe ) { fnfe.printStackTrace(); }
-      catch ( IOException ioe ) { ioe.printStackTrace(); }
     }
 
     public static void startServer() {    
@@ -855,34 +838,25 @@ public class AdMonitor {
     }
 
     public static void showResults() {
-     BufferedWriter csvWriter = null;
-     try {
-	 csvWriter = new BufferedWriter( new FileWriter("/root/Desktop/Admonitor/AdMonitorOutput.csv") );
-         csvWriter.write( "\"Ad Url\",\"File Name\",\"Content Type\",\"Landing Page URL\"\n" );
-     } catch ( IOException ioe ) { ioe.printStackTrace(); }
-     try {
+    try {
       ResultSet localResultSet1 = stmt.executeQuery("SELECT COUNT(*) FROM ad_urls AS t1 LEFT OUTER JOIN landing_page_urls AS t2 ON t2.ad_url=t1.url_string");
       localResultSet1.next();
       System.out.println("count = " + localResultSet1.getString(1));
       localResultSet1.close();
-      ResultSet localResultSet2 = stmt.executeQuery("SELECT DISTINCT t1.*, t2.landing_page_url FROM ad_urls AS t1 LEFT OUTER JOIN landing_page_urls AS t2 ON ( t2.ad_url=t1.url_string ) ORDER BY t1.file_name ASC");
+      ResultSet localResultSet2 = stmt.executeQuery("SELECT t1.*, t2.landing_page_url FROM ad_urls AS t1 LEFT OUTER JOIN landing_page_urls AS t2 ON ( t2.ad_url=t1.url_string ) GROUP BY t1.ad_url ORDER BY t1.file_name ASC");
       while (localResultSet2.next())
         try {
           System.out.println(localResultSet2.getString(1).trim() + ", " + localResultSet2.getString(2) + ", " + localResultSet2.getString(3) + ", " + localResultSet2.getString(4));
-          csvWriter.write( "\"" + localResultSet2.getString(1).trim() + "\",\"" + localResultSet2.getString(2) + "\",\"" + localResultSet2.getString(3) + "\",\"" + localResultSet2.getString(4) + "\"\n" );
         }
-        catch (NullPointerException localNullPointerException) {
+        catch (NullPointerException localNullPointerException)
+        {
           localNullPointerException.printStackTrace();
         }
-        catch ( IOException ioe ) { ioe.printStackTrace(); }
-       localResultSet2.close();
+      localResultSet2.close();
     }
     catch (SQLException localSQLException) {
       localSQLException.printStackTrace();
     }
-    try {
-	csvWriter.close();
-    } catch ( IOException ioe ) { ioe.printStackTrace(); }
   }
 
   public static void killJavaProcesses() {

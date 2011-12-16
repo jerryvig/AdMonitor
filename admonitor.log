@@ -1,175 +1,102 @@
 /*C3*/SET SCHEMA PUBLIC
 DROP TABLE IF EXISTS url_list
 CREATE TABLE url_list ( url_string VARCHAR(2048) )
-INSERT INTO URL_LIST VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/WEb_Banner_Circ_Ad_SUBSCRIBE.png')
+INSERT INTO URL_LIST VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf')
 COMMIT
-INSERT INTO URL_LIST VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_BAnner_Circ_Ad_PRINT.png')
+INSERT INTO URL_LIST VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png')
 COMMIT
-INSERT INTO URL_LIST VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_CHOOSE.png')
+INSERT INTO URL_LIST VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg')
 COMMIT
-INSERT INTO URL_LIST VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_DIGITAL.png')
+INSERT INTO URL_LIST VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8')
 COMMIT
-INSERT INTO URL_LIST VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L1_HouseCirc_102811/Left1-Skyscraper-Circ-Sub-Ad_2.jpg/1320336202')
+INSERT INTO URL_LIST VALUES('http://ad.doubleclick.net/dot.gif?2068301280')
 COMMIT
-INSERT INTO URL_LIST VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Mid_HouseCirc_102811/Middle-Island-Circ-Sub-Ad.jpg/1319837724')
+INSERT INTO URL_LIST VALUES('http://spe.atdmt.com/images/pixel.gif')
 COMMIT
-INSERT INTO URL_LIST VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Top_HBrss_032009/HBcom_RSSBanner_728X90_g.gif/1237590467')
+INSERT INTO URL_LIST VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8')
 COMMIT
-INSERT INTO URL_LIST VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_But_Aflac_060710/Aflac_HBF_120x60.gif/1276012971')
-COMMIT
-INSERT INTO URL_LIST VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R_HouseCirc_102811/Right-Skyscraper-Circ-Sub-Ad_2.jpg/1320249424')
-COMMIT
-INSERT INTO URL_LIST VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/default/empty.gif/0')
-COMMIT
-INSERT INTO URL_LIST VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Bott_HouseCirc_102811/Bottom-Banner-Circ-Sub-Ad.jpg/1319841367')
-COMMIT
-INSERT INTO URL_LIST VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L_HouseCirc_102811/Left-Skyscraper-Circ-Sub-Ad.jpg/1319840702')
-COMMIT
-INSERT INTO URL_LIST VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R1_HouseCirc_102811/Right1-Skyscraper-Circ-Sub-Ad.jpg/1319839197')
-COMMIT
-INSERT INTO URL_LIST VALUES('http://ad.yieldmanager.com/pixel?adv=76762&code=I8T&t=2&code=hispanicbusiness.com')
+INSERT INTO URL_LIST VALUES('http://ads.univision.com/ads/abciaudit/1x1_ABCiAudit.gif')
 COMMIT
 DROP TABLE IF EXISTS unique_urls
 CREATE TABLE unique_urls ( url_string VARCHAR(2048) )
-INSERT INTO UNIQUE_URLS VALUES('http://ad.yieldmanager.com/pixel?adv=76762&code=I8T&t=2&code=hispanicbusiness.com')
-INSERT INTO UNIQUE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Bott_HouseCirc_102811/Bottom-Banner-Circ-Sub-Ad.jpg/1319841367')
-INSERT INTO UNIQUE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_But_Aflac_060710/Aflac_HBF_120x60.gif/1276012971')
-INSERT INTO UNIQUE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L1_HouseCirc_102811/Left1-Skyscraper-Circ-Sub-Ad_2.jpg/1320336202')
-INSERT INTO UNIQUE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L_HouseCirc_102811/Left-Skyscraper-Circ-Sub-Ad.jpg/1319840702')
-INSERT INTO UNIQUE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Mid_HouseCirc_102811/Middle-Island-Circ-Sub-Ad.jpg/1319837724')
-INSERT INTO UNIQUE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R1_HouseCirc_102811/Right1-Skyscraper-Circ-Sub-Ad.jpg/1319839197')
-INSERT INTO UNIQUE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R_HouseCirc_102811/Right-Skyscraper-Circ-Sub-Ad_2.jpg/1320249424')
-INSERT INTO UNIQUE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Top_HBrss_032009/HBcom_RSSBanner_728X90_g.gif/1237590467')
-INSERT INTO UNIQUE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/default/empty.gif/0')
-INSERT INTO UNIQUE_URLS VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/WEb_Banner_Circ_Ad_SUBSCRIBE.png')
-INSERT INTO UNIQUE_URLS VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_BAnner_Circ_Ad_PRINT.png')
-INSERT INTO UNIQUE_URLS VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_CHOOSE.png')
-INSERT INTO UNIQUE_URLS VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_DIGITAL.png')
+INSERT INTO UNIQUE_URLS VALUES('http://ad.doubleclick.net/dot.gif?2068301280')
+INSERT INTO UNIQUE_URLS VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg')
+INSERT INTO UNIQUE_URLS VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png')
+INSERT INTO UNIQUE_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8')
+INSERT INTO UNIQUE_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8')
+INSERT INTO UNIQUE_URLS VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf')
+INSERT INTO UNIQUE_URLS VALUES('http://spe.atdmt.com/images/pixel.gif')
 COMMIT
 DROP TABLE IF EXISTS urls_files
 CREATE TABLE urls_files ( url_string VARCHAR(2048), file_name VARCHAR(64) )
-INSERT INTO URLS_FILES VALUES('http://ad.yieldmanager.com/pixel?adv=76762&code=I8T&t=2&code=hispanicbusiness.com','e5db37d63fd19a76b6eab04de9c4aad35856e4f3')
+INSERT INTO URLS_FILES VALUES('http://ad.doubleclick.net/dot.gif?2068301280','e5db37d63fd19a76b6eab04de9c4aad35856e4f3')
 COMMIT
-INSERT INTO URLS_FILES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Bott_HouseCirc_102811/Bottom-Banner-Circ-Sub-Ad.jpg/1319841367','60b27f004e454aca81b0480209cce5081ec52390')
+INSERT INTO URLS_FILES VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg','60b27f004e454aca81b0480209cce5081ec52390')
 COMMIT
-INSERT INTO URLS_FILES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_But_Aflac_060710/Aflac_HBF_120x60.gif/1276012971','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523')
+INSERT INTO URLS_FILES VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523')
 COMMIT
-INSERT INTO URLS_FILES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L1_HouseCirc_102811/Left1-Skyscraper-Circ-Sub-Ad_2.jpg/1320336202','d5b0a58bc47161b1b8a831084b366f757c4f0b11')
+INSERT INTO URLS_FILES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8','d5b0a58bc47161b1b8a831084b366f757c4f0b11')
 COMMIT
-INSERT INTO URLS_FILES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L_HouseCirc_102811/Left-Skyscraper-Circ-Sub-Ad.jpg/1319840702','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08')
+INSERT INTO URLS_FILES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08')
 COMMIT
-INSERT INTO URLS_FILES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Mid_HouseCirc_102811/Middle-Island-Circ-Sub-Ad.jpg/1319837724','c1750bee9c1f7b5dd6f025b645ab6eba5df94175')
+INSERT INTO URLS_FILES VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf','c1750bee9c1f7b5dd6f025b645ab6eba5df94175')
 COMMIT
-INSERT INTO URLS_FILES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R1_HouseCirc_102811/Right1-Skyscraper-Circ-Sub-Ad.jpg/1319839197','0a856eb66ff730bd2edc068b17c0cb51fc09fc4b')
-COMMIT
-INSERT INTO URLS_FILES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R_HouseCirc_102811/Right-Skyscraper-Circ-Sub-Ad_2.jpg/1320249424','d8cea2d0a17ce156a082567ddec8016ba1a8643c')
-COMMIT
-INSERT INTO URLS_FILES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Top_HBrss_032009/HBcom_RSSBanner_728X90_g.gif/1237590467','97bfb660c85037edae8468c6e5ce2799364ad26e')
-COMMIT
-INSERT INTO URLS_FILES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/default/empty.gif/0','3c18d97d83a768f061fbefea5f5b86cf8adde3eb')
-COMMIT
-INSERT INTO URLS_FILES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/WEb_Banner_Circ_Ad_SUBSCRIBE.png','1c1d732e8620c8b8398b8a2bbb18fa67a09b18c2')
-COMMIT
-INSERT INTO URLS_FILES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_BAnner_Circ_Ad_PRINT.png','7acf6b8a5c466eb77076ff396a073d0a350874d0')
-COMMIT
-INSERT INTO URLS_FILES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_CHOOSE.png','8696eb5c6ace1e47e6f20408b8bc4f3cd01a90d0')
-COMMIT
-INSERT INTO URLS_FILES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_DIGITAL.png','02b2cebadbec73e83a635cdc24a743ad58344e57')
+INSERT INTO URLS_FILES VALUES('http://spe.atdmt.com/images/pixel.gif','0a856eb66ff730bd2edc068b17c0cb51fc09fc4b')
 COMMIT
 DROP TABLE IF EXISTS urls_files_types
 CREATE TABLE urls_files_types ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )
-INSERT INTO URLS_FILES_TYPES VALUES('http://ad.yieldmanager.com/pixel?adv=76762&code=I8T&t=2&code=hispanicbusiness.com','e5db37d63fd19a76b6eab04de9c4aad35856e4f3','application/x-empty')
+INSERT INTO URLS_FILES_TYPES VALUES('http://ad.doubleclick.net/dot.gif?2068301280','e5db37d63fd19a76b6eab04de9c4aad35856e4f3','image/gif')
 COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Bott_HouseCirc_102811/Bottom-Banner-Circ-Sub-Ad.jpg/1319841367','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg')
+INSERT INTO URLS_FILES_TYPES VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg')
 COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_But_Aflac_060710/Aflac_HBF_120x60.gif/1276012971','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/gif')
+INSERT INTO URLS_FILES_TYPES VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/png')
 COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L1_HouseCirc_102811/Left1-Skyscraper-Circ-Sub-Ad_2.jpg/1320336202','d5b0a58bc47161b1b8a831084b366f757c4f0b11','image/jpeg')
+INSERT INTO URLS_FILES_TYPES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8','d5b0a58bc47161b1b8a831084b366f757c4f0b11','application/x-shockwave-flash')
 COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L_HouseCirc_102811/Left-Skyscraper-Circ-Sub-Ad.jpg/1319840702','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg')
+INSERT INTO URLS_FILES_TYPES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg')
 COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Mid_HouseCirc_102811/Middle-Island-Circ-Sub-Ad.jpg/1319837724','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','image/jpeg')
+INSERT INTO URLS_FILES_TYPES VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','application/x-shockwave-flash')
 COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R1_HouseCirc_102811/Right1-Skyscraper-Circ-Sub-Ad.jpg/1319839197','0a856eb66ff730bd2edc068b17c0cb51fc09fc4b','image/jpeg')
-COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R_HouseCirc_102811/Right-Skyscraper-Circ-Sub-Ad_2.jpg/1320249424','d8cea2d0a17ce156a082567ddec8016ba1a8643c','image/jpeg')
-COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Top_HBrss_032009/HBcom_RSSBanner_728X90_g.gif/1237590467','97bfb660c85037edae8468c6e5ce2799364ad26e','image/gif')
-COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/default/empty.gif/0','3c18d97d83a768f061fbefea5f5b86cf8adde3eb','image/gif')
-COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/WEb_Banner_Circ_Ad_SUBSCRIBE.png','1c1d732e8620c8b8398b8a2bbb18fa67a09b18c2','image/png')
-COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_BAnner_Circ_Ad_PRINT.png','7acf6b8a5c466eb77076ff396a073d0a350874d0','image/png')
-COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_CHOOSE.png','8696eb5c6ace1e47e6f20408b8bc4f3cd01a90d0','image/png')
-COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_DIGITAL.png','02b2cebadbec73e83a635cdc24a743ad58344e57','image/png')
+INSERT INTO URLS_FILES_TYPES VALUES('http://spe.atdmt.com/images/pixel.gif','0a856eb66ff730bd2edc068b17c0cb51fc09fc4b','image/gif')
 COMMIT
 DROP TABLE IF EXISTS good_content_types
 CREATE TABLE good_content_types ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Bott_HouseCirc_102811/Bottom-Banner-Circ-Sub-Ad.jpg/1319841367','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_But_Aflac_060710/Aflac_HBF_120x60.gif/1276012971','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/gif')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L1_HouseCirc_102811/Left1-Skyscraper-Circ-Sub-Ad_2.jpg/1320336202','d5b0a58bc47161b1b8a831084b366f757c4f0b11','image/jpeg')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L_HouseCirc_102811/Left-Skyscraper-Circ-Sub-Ad.jpg/1319840702','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Mid_HouseCirc_102811/Middle-Island-Circ-Sub-Ad.jpg/1319837724','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','image/jpeg')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R1_HouseCirc_102811/Right1-Skyscraper-Circ-Sub-Ad.jpg/1319839197','0a856eb66ff730bd2edc068b17c0cb51fc09fc4b','image/jpeg')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R_HouseCirc_102811/Right-Skyscraper-Circ-Sub-Ad_2.jpg/1320249424','d8cea2d0a17ce156a082567ddec8016ba1a8643c','image/jpeg')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Top_HBrss_032009/HBcom_RSSBanner_728X90_g.gif/1237590467','97bfb660c85037edae8468c6e5ce2799364ad26e','image/gif')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/default/empty.gif/0','3c18d97d83a768f061fbefea5f5b86cf8adde3eb','image/gif')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/WEb_Banner_Circ_Ad_SUBSCRIBE.png','1c1d732e8620c8b8398b8a2bbb18fa67a09b18c2','image/png')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_BAnner_Circ_Ad_PRINT.png','7acf6b8a5c466eb77076ff396a073d0a350874d0','image/png')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_CHOOSE.png','8696eb5c6ace1e47e6f20408b8bc4f3cd01a90d0','image/png')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_DIGITAL.png','02b2cebadbec73e83a635cdc24a743ad58344e57','image/png')
+INSERT INTO GOOD_CONTENT_TYPES VALUES('http://ad.doubleclick.net/dot.gif?2068301280','e5db37d63fd19a76b6eab04de9c4aad35856e4f3','image/gif')
+INSERT INTO GOOD_CONTENT_TYPES VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg')
+INSERT INTO GOOD_CONTENT_TYPES VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/png')
+INSERT INTO GOOD_CONTENT_TYPES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8','d5b0a58bc47161b1b8a831084b366f757c4f0b11','application/x-shockwave-flash')
+INSERT INTO GOOD_CONTENT_TYPES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg')
+INSERT INTO GOOD_CONTENT_TYPES VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','application/x-shockwave-flash')
+INSERT INTO GOOD_CONTENT_TYPES VALUES('http://spe.atdmt.com/images/pixel.gif','0a856eb66ff730bd2edc068b17c0cb51fc09fc4b','image/gif')
 COMMIT
 DROP TABLE IF EXISTS bad_images
 CREATE TABLE bad_images ( file_name VARCHAR(64) )
-INSERT INTO BAD_IMAGES VALUES('3c18d97d83a768f061fbefea5f5b86cf8adde3eb')
+INSERT INTO BAD_IMAGES VALUES('0a856eb66ff730bd2edc068b17c0cb51fc09fc4b')
+COMMIT
+INSERT INTO BAD_IMAGES VALUES('e5db37d63fd19a76b6eab04de9c4aad35856e4f3')
 COMMIT
 DROP TABLE IF EXISTS ad_urls
 CREATE TABLE ad_urls ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )
-INSERT INTO AD_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Bott_HouseCirc_102811/Bottom-Banner-Circ-Sub-Ad.jpg/1319841367','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg')
+INSERT INTO AD_URLS VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg')
 COMMIT
-INSERT INTO AD_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_But_Aflac_060710/Aflac_HBF_120x60.gif/1276012971','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/gif')
+INSERT INTO AD_URLS VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/png')
 COMMIT
-INSERT INTO AD_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L1_HouseCirc_102811/Left1-Skyscraper-Circ-Sub-Ad_2.jpg/1320336202','d5b0a58bc47161b1b8a831084b366f757c4f0b11','image/jpeg')
+INSERT INTO AD_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8','d5b0a58bc47161b1b8a831084b366f757c4f0b11','application/x-shockwave-flash')
 COMMIT
-INSERT INTO AD_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L_HouseCirc_102811/Left-Skyscraper-Circ-Sub-Ad.jpg/1319840702','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg')
+INSERT INTO AD_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg')
 COMMIT
-INSERT INTO AD_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Mid_HouseCirc_102811/Middle-Island-Circ-Sub-Ad.jpg/1319837724','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','image/jpeg')
-COMMIT
-INSERT INTO AD_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R1_HouseCirc_102811/Right1-Skyscraper-Circ-Sub-Ad.jpg/1319839197','0a856eb66ff730bd2edc068b17c0cb51fc09fc4b','image/jpeg')
-COMMIT
-INSERT INTO AD_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R_HouseCirc_102811/Right-Skyscraper-Circ-Sub-Ad_2.jpg/1320249424','d8cea2d0a17ce156a082567ddec8016ba1a8643c','image/jpeg')
-COMMIT
-INSERT INTO AD_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Top_HBrss_032009/HBcom_RSSBanner_728X90_g.gif/1237590467','97bfb660c85037edae8468c6e5ce2799364ad26e','image/gif')
-COMMIT
-INSERT INTO AD_URLS VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/WEb_Banner_Circ_Ad_SUBSCRIBE.png','1c1d732e8620c8b8398b8a2bbb18fa67a09b18c2','image/png')
-COMMIT
-INSERT INTO AD_URLS VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_BAnner_Circ_Ad_PRINT.png','7acf6b8a5c466eb77076ff396a073d0a350874d0','image/png')
-COMMIT
-INSERT INTO AD_URLS VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_CHOOSE.png','8696eb5c6ace1e47e6f20408b8bc4f3cd01a90d0','image/png')
-COMMIT
-INSERT INTO AD_URLS VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_DIGITAL.png','02b2cebadbec73e83a635cdc24a743ad58344e57','image/png')
+INSERT INTO AD_URLS VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','application/x-shockwave-flash')
 COMMIT
 DROP TABLE IF EXISTS landing_page_urls
 CREATE TABLE landing_page_urls ( ad_url VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256), landing_page_url VARCHAR(2048) )
-INSERT INTO LANDING_PAGE_URLS VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_BAnner_Circ_Ad_PRINT.png','7acf6b8a5c466eb77076ff396a073d0a350874d0','image/png','https://www.pubservice.com/Subcnew.aspx?PC=HB&PK=W**BLX*')
+INSERT INTO LANDING_PAGE_URLS VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/png','http://www.directv.com/DTVAPP/content/best_offer/univision')
 COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://www.hispanicbusiness.com/_client_common/images/main/header/Web_Banner_Circ_Ad_CHOOSE.png','8696eb5c6ace1e47e6f20408b8bc4f3cd01a90d0','image/png','https://www.pubservice.com/Subcnew.aspx?PC=HB&PK=W**BLX*')
+INSERT INTO LANDING_PAGE_URLS VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg','http://tiendafutbol.univision.com/')
 COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Top_HBrss_032009/HBcom_RSSBanner_728X90_g.gif/1237590467','97bfb660c85037edae8468c6e5ce2799364ad26e','image/gif','http://www.hispanicbusiness.com/rss/')
+INSERT INTO LANDING_PAGE_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg','http://tiendafutbol.univision.com/departamentos-calzado.html')
 COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L_HouseCirc_102811/Left-Skyscraper-Circ-Sub-Ad.jpg/1319840702','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg','https://www.pubservice.com/Subcnew.aspx?PC=HB&PK=W**BRX*')
+INSERT INTO LANDING_PAGE_URLS VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','application/x-shockwave-flash','https://www.facebook.com/burgerking?v=app_211978108877945')
 COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_L1_HouseCirc_102811/Left1-Skyscraper-Circ-Sub-Ad_2.jpg/1320336202','d5b0a58bc47161b1b8a831084b366f757c4f0b11','image/jpeg','https://www.pubservice.com/Subcnew.aspx?PC=HB&PK=W**BRX*')
-COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Mid_HouseCirc_102811/Middle-Island-Circ-Sub-Ad.jpg/1319837724','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','image/jpeg','https://www.pubservice.com/Subcnew.aspx?PC=HB&PK=W**BRX*')
-COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_R_HouseCirc_102811/Right-Skyscraper-Circ-Sub-Ad_2.jpg/1320249424','d8cea2d0a17ce156a082567ddec8016ba1a8643c','image/jpeg','https://www.pubservice.com/Subcnew.aspx?PC=HB&PK=W**BRX*')
-COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_But_Aflac_060710/Aflac_HBF_120x60.gif/1276012971','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/gif','http://www.hispanicbusiness.com/recursos-para-negocios/')
-COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://imagec14.247realmedia.com/RealMedia/ads/Creatives/HBinc/HBcom_Bott_HouseCirc_102811/Bottom-Banner-Circ-Sub-Ad.jpg/1319841367','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg','https://www.pubservice.com/Subcnew.aspx?PC=HB&PK=W**BRX*')
+INSERT INTO LANDING_PAGE_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8','d5b0a58bc47161b1b8a831084b366f757c4f0b11','application/x-shockwave-flash','http://adclick.g.doubleclick.net%2faclk%25253fsa%25253dl%252526ai%25253db2tqfrjvrts32f43wnqs99ejmc7wvh5cdaaaaeaegadgawn2qyzbcymnw64bio6azggexy2etchviltexmdcwmzi1mzawmjq3mjiyarrkaw5lcm8udw5pdmlzaw9ulmnvbbobcjmwmhgyntbfyxpiaqnaarxodhrwoi8vzgluzxjvlnvuaxzpc2lvbi5jb20v4aegwaic4aia6giynjg4ms91aw0uzgluzxjvl2hvbwvwywdl-akb0h6qa_abmaoka6gdadaeke7gbaggbh8%252526num%25253d0%252526sig%25253daod64_29uyzvyeb1n_z1-cqfkab1lxz8zg%252526client%25253dca-pub-1107032530024728%252526adurl%25253dhttp//clk.atdmt.com%2FCHI%2Fgo%2F367714683%2Fdirect%3Bwi.1%3Bhi.1%2F01%2F%20')
 COMMIT
 DISCONNECT
