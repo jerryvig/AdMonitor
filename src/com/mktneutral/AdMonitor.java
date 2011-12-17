@@ -150,7 +150,7 @@ public class AdMonitor {
         JSONObject resp = obj.getJSONObject( "response" );
         JSONObject content = resp.getJSONObject( "content" );
 
-        if ( content.getString( "mimeType" ).equals("image/png") || content.getString( "mimeType" ).equals("image/jpeg") || content.getString( "mimeType" ).equals("image/gif") || content.getString( "mimeType" ).equals("application/x-shockwave-flash")  ) {
+        if ( content.getString( "mimeType" ).startsWith("image/png") || content.getString( "mimeType" ).startsWith("image/jpeg") || content.getString( "mimeType" ).startsWith("image/gif") || content.getString( "mimeType" ).startsWith("application/x-shockwave-flash")  ) {
             //System.out.println( "MimeType = " + content.getString( "mimeType" ) );
 	    JSONObject req = obj.getJSONObject("request");
             String urlString = req.getString("url").trim();
@@ -210,7 +210,7 @@ public class AdMonitor {
        } catch ( SQLException sqle ) { sqle.printStackTrace(); }
 
        try {
-        Process p = Runtime.getRuntime().exec( "/bin/rm -f /root/Desktop/Admonitor/DL/file*" );
+        Process p = Runtime.getRuntime().exec( "/bin/rm -f /root/Desktop/AdMonitor/DL/file*" );
         p.waitFor(); 
         BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String s;
@@ -225,7 +225,7 @@ public class AdMonitor {
        for ( String adUrl : adUrlList ) {
          try {
 	   String fileName = SimpleSHA1.SHA1("file" + Integer.toString( fileCounter ));
-	   String cmdString = "/usr/bin/wget -v --output-document=/root/Desktop/Admonitor/DL/" + fileName + " --tries=3 " + adUrl;
+	   String cmdString = "/usr/bin/wget -v --output-document=/root/Desktop/AdMonitor/DL/" + fileName + " --tries=3 " + adUrl;
            System.out.println( cmdString );
 	   Process  p = Runtime.getRuntime().exec( cmdString );
            p.waitFor();
@@ -253,7 +253,7 @@ public class AdMonitor {
 
       while ( fileNames.next() ) {
 	  // System.out.println( fileNames.getString(2).trim() );
-        String fileName = "/root/Desktop/Admonitor/DL/" + fileNames.getString(2).trim();
+        String fileName = "/root/Desktop/AdMonitor/DL/" + fileNames.getString(2).trim();
         String cmdString = "/usr/bin/file -bi " + fileName;
         Process p = Runtime.getRuntime().exec( cmdString );
         p.waitFor();
@@ -261,7 +261,7 @@ public class AdMonitor {
         String s;
         while ((s = r.readLine())!=null) {
 	  try {
-	      // System.out.println( "INSERT INTO urls_files_types VALUES ( '" + fileNames.getString(1).trim() + "', '" +  fileNames.getString(2).trim() + "', '" + s.trim() + "' )" );
+	     System.out.println( "INSERT INTO urls_files_types VALUES ( '" + fileNames.getString(1).trim() + "', '" +  fileNames.getString(2).trim() + "', '" + s.trim() + "' )" );
 	    stmt.executeUpdate( "INSERT INTO urls_files_types VALUES ( '" + fileNames.getString(1).trim() + "', '" +  fileNames.getString(2).trim() + "', '" + s.trim() + "' )" );           
           } catch ( SQLException sqle ) { sqle.printStackTrace(); }
         }
@@ -293,7 +293,7 @@ public class AdMonitor {
 	stmt.executeUpdate( "CREATE TABLE bad_images ( file_name VARCHAR(64) )" );        
         ResultSet rs =  stmt.executeQuery( "SELECT * FROM good_content_types WHERE (LOCATE('image/jpeg',content_type)!=0 OR LOCATE('image/gif',content_type)!=0 OR LOCATE('image/png',content_type)!=0) ORDER BY file_name ASC" );        
         while ( rs.next() ) {
-	  URL imgUrl = new URL( "file:///root/Desktop/Admonitor/DL/" + rs.getString(2) );
+	  URL imgUrl = new URL( "file:///root/Desktop/AdMonitor/DL/" + rs.getString(2) );
           // System.out.println( "imgs " + rs.getString(2) );
           BufferedImage img = ImageIO.read( imgUrl );
           if ( img.getWidth() == 1 || img.getHeight() == 1 || img.getWidth() == 2 || img.getHeight() == 2 || img.getWidth() == 3 || img.getHeight() == 3 || img.getWidth() == 4 || img.getHeight() == 4 ) {
@@ -386,7 +386,7 @@ public class AdMonitor {
              String imgLastPiece = imgPieces[imgPieces.length-1];
              for ( int j=0; j<contentTypes.size(); j++ ) {
 		 try {
-                if ( contentTypes.get(j).equals("image/png") || contentTypes.get(j).equals("image/jpeg") || contentTypes.get(j).equals("image/gif") ) {
+                if ( contentTypes.get(j).startsWith("image/png") || contentTypes.get(j).startsWith("image/jpeg") || contentTypes.get(j).startsWith("image/gif") ) {
                     String[] pieces = adUrls.get(j).trim().split("/");
                     if ( pieces[pieces.length-1].equals( imgLastPiece ) ) {
 			// System.out.println( pieces[pieces.length-1] + ", " +  imgLastPiece );
@@ -446,7 +446,7 @@ public class AdMonitor {
             String[] embedPieces = embedSrc.trim().split("/");
             String embedLastPiece = embedPieces[embedPieces.length-1];
             for ( int j=0; j<contentTypes.size(); j++ ) {
-	      if ( contentTypes.get(j).equals("application/x-shockwave-flash") ) {
+	      if ( contentTypes.get(j).startsWith("application/x-shockwave-flash") ) {
 	       try {
 	          String[] pieces = adUrls.get(j).trim().split("/");
                   if ( pieces[pieces.length-1].equals( embedLastPiece ) ) {
@@ -628,7 +628,7 @@ public class AdMonitor {
               String imgLastPiece = imgPieces[imgPieces.length-1];
               for ( int j=0; j<contentTypes.size(); j++ ) {
 		try {
-                   if ( contentTypes.get(j).equals("image/png") || contentTypes.get(j).equals("image/jpeg") || contentTypes.get(j).equals("image/gif") ) {
+                   if ( contentTypes.get(j).startsWith("image/png") || contentTypes.get(j).startsWith("image/jpeg") || contentTypes.get(j).startsWith("image/gif") ) {
                     String[] pieces = adUrls.get(j).trim().split("/");
                     if ( pieces[pieces.length-1].equals( imgLastPiece ) ) {
 			// System.out.println( pieces[pieces.length-1] + ", " +  imgLastPiece );
@@ -699,7 +699,7 @@ public class AdMonitor {
                String embedLastPiece = embedPieces[embedPieces.length-1];
 	       // System.out.println( "embed last piece = " + embedLastPiece );
                for ( int j=0; j<contentTypes.size(); j++ ) {
-	         if ( contentTypes.get(j).equals("application/x-shockwave-flash") ) {
+	         if ( contentTypes.get(j).startsWith("application/x-shockwave-flash") ) {
 	           try {
                       String[] pieces = adUrls.get(j).trim().split("/");
                       if ( pieces[pieces.length-1].equals( embedLastPiece ) ) {
@@ -857,7 +857,7 @@ public class AdMonitor {
     public static void showResults() {
      BufferedWriter csvWriter = null;
      try {
-	 csvWriter = new BufferedWriter( new FileWriter("/root/Desktop/Admonitor/AdMonitorOutput.csv") );
+	 csvWriter = new BufferedWriter( new FileWriter("./AdMonitorOutput.csv") );
          csvWriter.write( "\"Ad Url\",\"File Name\",\"Content Type\",\"Landing Page URL\"\n" );
      } catch ( IOException ioe ) { ioe.printStackTrace(); }
      try {

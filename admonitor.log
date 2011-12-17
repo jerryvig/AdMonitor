@@ -1,102 +1,64 @@
 /*C3*/SET SCHEMA PUBLIC
 DROP TABLE IF EXISTS url_list
 CREATE TABLE url_list ( url_string VARCHAR(2048) )
-INSERT INTO URL_LIST VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf')
+INSERT INTO URL_LIST VALUES('http://s0.2mdn.net/3194269/728x90-messi-ronaldo_V2.swf')
 COMMIT
-INSERT INTO URL_LIST VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png')
+INSERT INTO URL_LIST VALUES('http://s0.2mdn.net/3194269/300x250-messi-ronaldo_V2.swf')
 COMMIT
-INSERT INTO URL_LIST VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg')
+INSERT INTO URL_LIST VALUES('http://s0.2mdn.net/viewad/817-grey.gif')
 COMMIT
-INSERT INTO URL_LIST VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8')
-COMMIT
-INSERT INTO URL_LIST VALUES('http://ad.doubleclick.net/dot.gif?2068301280')
-COMMIT
-INSERT INTO URL_LIST VALUES('http://spe.atdmt.com/images/pixel.gif')
-COMMIT
-INSERT INTO URL_LIST VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8')
-COMMIT
-INSERT INTO URL_LIST VALUES('http://ads.univision.com/ads/abciaudit/1x1_ABCiAudit.gif')
+INSERT INTO URL_LIST VALUES('http://adsatt.espn.go.com/ad/sponsors/blank/blank.gif')
 COMMIT
 DROP TABLE IF EXISTS unique_urls
 CREATE TABLE unique_urls ( url_string VARCHAR(2048) )
-INSERT INTO UNIQUE_URLS VALUES('http://ad.doubleclick.net/dot.gif?2068301280')
-INSERT INTO UNIQUE_URLS VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg')
-INSERT INTO UNIQUE_URLS VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png')
-INSERT INTO UNIQUE_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8')
-INSERT INTO UNIQUE_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8')
-INSERT INTO UNIQUE_URLS VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf')
-INSERT INTO UNIQUE_URLS VALUES('http://spe.atdmt.com/images/pixel.gif')
+INSERT INTO UNIQUE_URLS VALUES('http://adsatt.espn.go.com/ad/sponsors/blank/blank.gif')
+INSERT INTO UNIQUE_URLS VALUES('http://s0.2mdn.net/3194269/300x250-messi-ronaldo_V2.swf')
+INSERT INTO UNIQUE_URLS VALUES('http://s0.2mdn.net/3194269/728x90-messi-ronaldo_V2.swf')
+INSERT INTO UNIQUE_URLS VALUES('http://s0.2mdn.net/viewad/817-grey.gif')
 COMMIT
 DROP TABLE IF EXISTS urls_files
 CREATE TABLE urls_files ( url_string VARCHAR(2048), file_name VARCHAR(64) )
-INSERT INTO URLS_FILES VALUES('http://ad.doubleclick.net/dot.gif?2068301280','e5db37d63fd19a76b6eab04de9c4aad35856e4f3')
+INSERT INTO URLS_FILES VALUES('http://adsatt.espn.go.com/ad/sponsors/blank/blank.gif','e5db37d63fd19a76b6eab04de9c4aad35856e4f3')
 COMMIT
-INSERT INTO URLS_FILES VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg','60b27f004e454aca81b0480209cce5081ec52390')
+INSERT INTO URLS_FILES VALUES('http://s0.2mdn.net/3194269/300x250-messi-ronaldo_V2.swf','60b27f004e454aca81b0480209cce5081ec52390')
 COMMIT
-INSERT INTO URLS_FILES VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523')
+INSERT INTO URLS_FILES VALUES('http://s0.2mdn.net/3194269/728x90-messi-ronaldo_V2.swf','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523')
 COMMIT
-INSERT INTO URLS_FILES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8','d5b0a58bc47161b1b8a831084b366f757c4f0b11')
-COMMIT
-INSERT INTO URLS_FILES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08')
-COMMIT
-INSERT INTO URLS_FILES VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf','c1750bee9c1f7b5dd6f025b645ab6eba5df94175')
-COMMIT
-INSERT INTO URLS_FILES VALUES('http://spe.atdmt.com/images/pixel.gif','0a856eb66ff730bd2edc068b17c0cb51fc09fc4b')
+INSERT INTO URLS_FILES VALUES('http://s0.2mdn.net/viewad/817-grey.gif','d5b0a58bc47161b1b8a831084b366f757c4f0b11')
 COMMIT
 DROP TABLE IF EXISTS urls_files_types
 CREATE TABLE urls_files_types ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )
-INSERT INTO URLS_FILES_TYPES VALUES('http://ad.doubleclick.net/dot.gif?2068301280','e5db37d63fd19a76b6eab04de9c4aad35856e4f3','image/gif')
+INSERT INTO URLS_FILES_TYPES VALUES('http://adsatt.espn.go.com/ad/sponsors/blank/blank.gif','e5db37d63fd19a76b6eab04de9c4aad35856e4f3','image/gif')
 COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg')
+INSERT INTO URLS_FILES_TYPES VALUES('http://s0.2mdn.net/3194269/300x250-messi-ronaldo_V2.swf','60b27f004e454aca81b0480209cce5081ec52390','application/x-shockwave-flash')
 COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/png')
+INSERT INTO URLS_FILES_TYPES VALUES('http://s0.2mdn.net/3194269/728x90-messi-ronaldo_V2.swf','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','application/x-shockwave-flash')
 COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8','d5b0a58bc47161b1b8a831084b366f757c4f0b11','application/x-shockwave-flash')
-COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg')
-COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','application/x-shockwave-flash')
-COMMIT
-INSERT INTO URLS_FILES_TYPES VALUES('http://spe.atdmt.com/images/pixel.gif','0a856eb66ff730bd2edc068b17c0cb51fc09fc4b','image/gif')
+INSERT INTO URLS_FILES_TYPES VALUES('http://s0.2mdn.net/viewad/817-grey.gif','d5b0a58bc47161b1b8a831084b366f757c4f0b11','image/gif')
 COMMIT
 DROP TABLE IF EXISTS good_content_types
 CREATE TABLE good_content_types ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://ad.doubleclick.net/dot.gif?2068301280','e5db37d63fd19a76b6eab04de9c4aad35856e4f3','image/gif')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/png')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8','d5b0a58bc47161b1b8a831084b366f757c4f0b11','application/x-shockwave-flash')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','application/x-shockwave-flash')
-INSERT INTO GOOD_CONTENT_TYPES VALUES('http://spe.atdmt.com/images/pixel.gif','0a856eb66ff730bd2edc068b17c0cb51fc09fc4b','image/gif')
+INSERT INTO GOOD_CONTENT_TYPES VALUES('http://adsatt.espn.go.com/ad/sponsors/blank/blank.gif','e5db37d63fd19a76b6eab04de9c4aad35856e4f3','image/gif')
+INSERT INTO GOOD_CONTENT_TYPES VALUES('http://s0.2mdn.net/3194269/300x250-messi-ronaldo_V2.swf','60b27f004e454aca81b0480209cce5081ec52390','application/x-shockwave-flash')
+INSERT INTO GOOD_CONTENT_TYPES VALUES('http://s0.2mdn.net/3194269/728x90-messi-ronaldo_V2.swf','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','application/x-shockwave-flash')
+INSERT INTO GOOD_CONTENT_TYPES VALUES('http://s0.2mdn.net/viewad/817-grey.gif','d5b0a58bc47161b1b8a831084b366f757c4f0b11','image/gif')
 COMMIT
 DROP TABLE IF EXISTS bad_images
 CREATE TABLE bad_images ( file_name VARCHAR(64) )
-INSERT INTO BAD_IMAGES VALUES('0a856eb66ff730bd2edc068b17c0cb51fc09fc4b')
+INSERT INTO BAD_IMAGES VALUES('d5b0a58bc47161b1b8a831084b366f757c4f0b11')
 COMMIT
 INSERT INTO BAD_IMAGES VALUES('e5db37d63fd19a76b6eab04de9c4aad35856e4f3')
 COMMIT
 DROP TABLE IF EXISTS ad_urls
 CREATE TABLE ad_urls ( url_string VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256) )
-INSERT INTO AD_URLS VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg')
+INSERT INTO AD_URLS VALUES('http://s0.2mdn.net/3194269/300x250-messi-ronaldo_V2.swf','60b27f004e454aca81b0480209cce5081ec52390','application/x-shockwave-flash')
 COMMIT
-INSERT INTO AD_URLS VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/png')
-COMMIT
-INSERT INTO AD_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8','d5b0a58bc47161b1b8a831084b366f757c4f0b11','application/x-shockwave-flash')
-COMMIT
-INSERT INTO AD_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg')
-COMMIT
-INSERT INTO AD_URLS VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','application/x-shockwave-flash')
+INSERT INTO AD_URLS VALUES('http://s0.2mdn.net/3194269/728x90-messi-ronaldo_V2.swf','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','application/x-shockwave-flash')
 COMMIT
 DROP TABLE IF EXISTS landing_page_urls
 CREATE TABLE landing_page_urls ( ad_url VARCHAR(2048), file_name VARCHAR(64), content_type VARCHAR(256), landing_page_url VARCHAR(2048) )
-INSERT INTO LANDING_PAGE_URLS VALUES('http://n.univision.com/ads/advertisers/directv/76590/94x63_directv_logo_kiosk.png','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','image/png','http://www.directv.com/DTVAPP/content/best_offer/univision')
+INSERT INTO LANDING_PAGE_URLS VALUES('http://s0.2mdn.net/3194269/728x90-messi-ronaldo_V2.swf','cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523','application/x-shockwave-flash','http://ad.doubleclick.net%2fclick%253bh%253dv8%2f3be0%2f3%2f0%2f%252a%2fn%253b246919068%253b0-0%253b0%253b73589891%253b3454-728%2f90%253b44796223%2f44814011%2f1%253bu%253dpgn%253dfrontpage%7cpgtyp%253dsoccer%7csp%253dfutbol%7clang%253des%7cgm%253ddesafiocolombia%7cleague%253dcol.1%253b%257esscs%253d%253fhttp//espndeportes.espn.go.com%2Ffutbol%2Fespana%2F')
 COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://n.univision.com/ads/advertisers/EuroSports/Mexico-Home-Jersey.jpg','60b27f004e454aca81b0480209cce5081ec52390','image/jpeg','http://tiendafutbol.univision.com/')
-COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDOrdrDEBCsAhj6ATIIKmTBeKu3Mv8','1b641bf4f6b84efcd42920ff1a88ff2f97fb9d08','image/jpeg','http://tiendafutbol.univision.com/departamentos-calzado.html')
-COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://s0.2mdn.net/3285487/1-bk_fff_728x90_SP.swf','c1750bee9c1f7b5dd6f025b645ab6eba5df94175','application/x-shockwave-flash','https://www.facebook.com/burgerking?v=app_211978108877945')
-COMMIT
-INSERT INTO LANDING_PAGE_URLS VALUES('http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICQrsvqfxABGAEyCOdxXauHQyE8','d5b0a58bc47161b1b8a831084b366f757c4f0b11','application/x-shockwave-flash','http://adclick.g.doubleclick.net%2faclk%25253fsa%25253dl%252526ai%25253db2tqfrjvrts32f43wnqs99ejmc7wvh5cdaaaaeaegadgawn2qyzbcymnw64bio6azggexy2etchviltexmdcwmzi1mzawmjq3mjiyarrkaw5lcm8udw5pdmlzaw9ulmnvbbobcjmwmhgyntbfyxpiaqnaarxodhrwoi8vzgluzxjvlnvuaxzpc2lvbi5jb20v4aegwaic4aia6giynjg4ms91aw0uzgluzxjvl2hvbwvwywdl-akb0h6qa_abmaoka6gdadaeke7gbaggbh8%252526num%25253d0%252526sig%25253daod64_29uyzvyeb1n_z1-cqfkab1lxz8zg%252526client%25253dca-pub-1107032530024728%252526adurl%25253dhttp//clk.atdmt.com%2FCHI%2Fgo%2F367714683%2Fdirect%3Bwi.1%3Bhi.1%2F01%2F%20')
+INSERT INTO LANDING_PAGE_URLS VALUES('http://s0.2mdn.net/3194269/300x250-messi-ronaldo_V2.swf','60b27f004e454aca81b0480209cce5081ec52390','application/x-shockwave-flash','http://ad.doubleclick.net%2fclick%253bh%253dv8%2f3be0%2f3%2f0%2f%252a%2fm%253b246919062%253b0-0%253b0%253b73589891%253b4307-300%2f250%253b44796310%2f44814098%2f1%253bu%253dpgn%253dfrontpage%7cpgtyp%253dsoccer%7csp%253dfutbol%7clang%253des%7cgm%253ddesafiocolombia%7cleague%253dcol.1%253b%257esscs%253d%253fhttp//espndeportes.espn.go.com%2Ffutbol%2Fespana%2F')
 COMMIT
 DISCONNECT

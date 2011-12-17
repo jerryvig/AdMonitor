@@ -1,27 +1,27 @@
-page	sitename	segment	useragent_name
-http://dinero.univision.com	Terra (U.S. Hispanic)	Hispanic	na
-http://www.terra.com/deportes	Terra (U.S. Hispanic)	Hispanic	na
-http://entretenimiento.aollatino.com	AOL Latino	Hispanic	na
-http://www.univision.com/content/channel.jhtml?chid=9711&schid=10206&secid=0	Univision.com	Hispanic	na
-http://www.automundo.com	Automundo.com	Hispanic	na
-http://lanueva1035.univision.com	Univision.com	Hispanic	na
-http://www.terra.com	Terra (U.S. Hispanic)	Hispanic	na
-http://relaciones.aollatino.com/category/noticias	AOL Latino	Hispanic	na
-http://musica.univision.com/radio	Univision.com	Hispanic	na
-http://www.eltiempo.com	ElTiempo.com (Colombia)	Colombia	na
-http://www.elpais.com.co/HOY/INT	ElPais.com.co	Colombia	na
-http://www.terra.com.co/automovil	Terra.com.co	Colombia	na
-http://www.vanguardia.com/multimedia	Vanguardia.com	Colombia	na
-http://co.starmedia.com/noticias/especiales/mundoinsolito.html	Starmedia Colombia	Colombia	na
-http://altonivel.com.mx	AltoNivel.com.mx	Mexico	na
-http://amor.prodigy.msn.com/channel/index.aspx?trackingid=1047874	Prodigy.MSN.com	Mexico	na
-http://blogs.televisadeportes.com	TelevisaDeportes.com (Mexico)	Mexico	na
-http://comercial.reforma.com/libre/comercial/autosnuevos	Reforma.com	Mexico	na
-http://desafiocolombia.espndeportes.espn.go.com	ESPNDeportes.com (from Mexico)	Mexico	na
-http://entretenimiento.prodigy.msn.com/blogs-podcasts/electronica	Prodigy.MSN.com	Mexico	na
-http://analia.telemundo.starcut.us/inf/infomo?site=analia	Telemundo Movil (m.Telemundo.com)	Hispanic Mobile Web	Iphone
-http://corazones.telemundo.starcut.us/inf/infomo?site=74&view=15381	Telemundo Movil (m.Telemundo.com)	Hispanic Mobile Web	Iphone
-http://es.babycenter.mobi/wscw-preview/jspsite/bc/inner/facts/index?blingindex=0&blinglimit=10&idd=6863	BabyCenter en Español Mobile (es.babycenter.mobi)	Hispanic Mobile Web	Nokia2330c
-http://m.terra.com/pms/core/inicio/cl/p/terrausa/?s=1215#_Noticia	Terra Mobile (m.Terra.com)	Hispanic Mobile Web	Nokia2330c
-http://m.elnuevoherald.com/nuevo/db_33530_index.htm	El Nuevo Herald (m.ElNuevoHerald.com)	Hispanic Mobile Web	BlackBerryTour9630
-http://univision.mobi/site?t=0WFURqJadpwZL29lYyWHjw&sid=um	Univision Movil (Univision.mobi)	Hispanic Mobile Web	BlackBerryTour9630
+"page"	"sitename"	"segment"	"useragent_name"
+"http://desafiocolombia.espndeportes.espn.go.com"	"Terra (U.S. Hispanic)"	"Hispanic"	"na"
+"http://www.terra.com/deportes"	"Terra (U.S. Hispanic)"	"Hispanic"	"na"
+"http://entretenimiento.aollatino.com"	"AOL Latino"	"Hispanic"	"na"
+"http://www.univision.com/content/channel.jhtml?chid=9711&schid=10206&secid=0"	"Univision.com"	"Hispanic"	"na"
+"http://www.automundo.com"	"Automundo.com"	"Hispanic"	"na"
+"http://lanueva1035.univision.com"	"Univision.com"	"Hispanic"	"na"
+"http://www.terra.com"	"Terra (U.S. Hispanic)"	"Hispanic"	"na"
+"http://relaciones.aollatino.com/category/noticias"	"AOL Latino"	"Hispanic"	"na"
+"http://musica.univision.com/radio"	"Univision.com"	"Hispanic"	"na"
+"http://www.eltiempo.com"	"ElTiempo.com (Colombia)"	"Colombia"	"na"
+"http://www.elpais.com.co/HOY/INT"	"ElPais.com.co"	"Colombia"	"na"
+"http://www.terra.com.co/automovil"	"Terra.com.co"	"Colombia"	"na"
+"http://www.vanguardia.com/multimedia"	"Vanguardia.com"	"Colombia"	"na"
+"http://co.starmedia.com/noticias/especiales/mundoinsolito.html"	"Starmedia Colombia"	"Colombia"	"na"
+"http://altonivel.com.mx"	"AltoNivel.com.mx"	"Mexico"	"na"
+"http://amor.prodigy.msn.com/channel/index.aspx?trackingid=1047874"	"Prodigy.MSN.com"	"Mexico"	"na"
+"http://blogs.televisadeportes.com"	"TelevisaDeportes.com (Mexico)"	"Mexico"	"na"
+"http://comercial.reforma.com/libre/comercial/autosnuevos"	"Reforma.com"	"Mexico"	"na"
+"http://desafiocolombia.espndeportes.espn.go.com"	"ESPNDeportes.com (from Mexico)"	"Mexico"	"na"
+"http://entretenimiento.prodigy.msn.com/blogs-podcasts/electronica"	"Prodigy.MSN.com"	"Mexico"	"na"
+"http://analia.telemundo.starcut.us/inf/infomo?site=analia"	"Telemundo Movil (m.Telemundo.com)"	"Hispanic Mobile Web"	"Iphone"
+"http://corazones.telemundo.starcut.us/inf/infomo?site=74&view=15381"	"Telemundo Movil (m.Telemundo.com)"	"Hispanic Mobile Web"	"Iphone"
+"http://es.babycenter.mobi/wscw-preview/jspsite/bc/inner/facts/index?blingindex=0&blinglimit=10&idd=6863"	"BabyCenter en Espaï¿½ol Mobile (es.babycenter.mobi)"	"Hispanic Mobile Web"	"Nokia2330c"
+"http://m.terra.com/pms/core/inicio/cl/p/terrausa/?s=1215#_Noticia"	"Terra Mobile (m.Terra.com)"	"Hispanic Mobile Web"	"Nokia2330c"
+"http://m.elnuevoherald.com/nuevo/db_33530_index.htm"	"El Nuevo Herald (m.ElNuevoHerald.com)"	"Hispanic Mobile Web"	"BlackBerryTour9630"
+"http://univision.mobi/site?t=0WFURqJadpwZL29lYyWHjw&sid=um"	"Univision Movil (Univision.mobi)"	"Hispanic Mobile Web"	"BlackBerryTour9630"
