@@ -344,6 +344,24 @@ public class AdMonitor {
 	      contentTypes.add( rs.getString(3).trim() );
           }
 
+          /*
+          ArrayList<String> frameSrcs = new ArrayList<String>();
+          try {
+	      //selena.getEval( "var frameList = ;" );
+             // System.out.println( "iframeLength = " + selena.getEval("frameList.length;") );
+             System.out.println( "here we are 1" );
+             for ( int i=0; i<iFrameCount; i++ ) {
+		 frameSrcs.add( selena.getEval( "window.document.getElementsByTagName('iframe').item("+Integer.toString(i)+").getAttribute('src');" ) );
+                 System.out.println( selena.getEval( "window.document.getElementsByTagName('iframe').item("+Integer.toString(i)+").getAttribute('src');" ) );
+	     }
+	     System.exit(0);
+	     } catch ( SeleniumException se ) { se.printStackTrace(); } */
+
+	  /*  for ( int i=0; i<iFrameCount; i++ ) {
+	      selena.getEval( "window.document.getElementsByTagName('iframe').item("+Integer.toString(i)+").setAttribute('name','frame"+Integer.toString(i)+"');");
+	      } */
+          
+
           try {
 	    Iterator iter = null;
 	    try {
@@ -549,18 +567,249 @@ public class AdMonitor {
             } catch ( SeleniumException se ) { se.printStackTrace(); }
           }
          
-          int frameCount = 0;
-          for ( String iframeSrc : iframeSrcList ) {
-              // System.out.println( "Getting iframe = " + iframeSrc + ", frameNumber = " + frameCount );   
-              processFrame( iframeSrc, winName );
-              frameCount++;
+          //here with select frames
+          int iFrameCount = 0;
+          try {
+	      iFrameCount =  Integer.parseInt( selena.getEval("window.frames.length") );
+              System.out.println( "IFRAME COUNT = " + iFrameCount );
+          } catch ( SeleniumException se ) { se.printStackTrace(); }
+
+          for ( int i=0; i<iFrameCount; i++ ) {
+              selena.selectFrame( "relative=top" );  
+              selena.getWrappedDriver().switchTo().frame( i );
+              //System.out.println( "Got frame"+Integer.toString(i) + " = " + selena.getLocation() );
+              processFrameII( i, winName );
           }
-          // System.out.println( "Processed all of the frames" );
-         
+          
+          System.out.println( "Processed all of the frames" );
+
          try {
             selena.close();
          } catch ( SeleniumException se ) { se.printStackTrace(); }
       } catch ( SQLException sqle ) { sqle.printStackTrace(); }
+    }
+
+    public static void processFrameII( int frameIdx, String referringWindow ) {
+        //check for blank iframe.
+        if ( selena.getLocation().trim().equals("") || selena.getLocation().trim().equals("about:blank")  ) {
+	    return;
+        }
+
+       System.out.println( "Processing the frame" );
+
+        //Do clicks on images and embeds within the frame.
+        int frameImgCount = 0;
+        try { 
+          frameImgCount = Integer.parseInt( selena.getEval( "var imgList = window.document.getElementsByTagName('img'); for ( var i=0; i<imgList.length; i++ ) { imgList.item(i).setAttribute('id','img'+i); } imgList.length;" ).trim() );
+        } catch ( SeleniumException se ) { se.printStackTrace(); }
+        //System.out.println ( "frame image count = " + frameImgCount );
+
+        int frameEmbedCount = 0;
+        try {
+           frameEmbedCount = Integer.parseInt( selena.getEval( "var embedList = window.document.getElementsByTagName('embed'); for ( var i=0; i<embedList.length; i++ ) { embedList.item(i).setAttribute('id','embed'+i); } embedList.length;").trim() );
+        } catch ( SeleniumException se ) { se.printStackTrace(); }
+        //System.out.println( "frame embed count = " + frameEmbedCount );
+       
+	int frameIframeCount = 0;
+        try { 
+           frameIframeCount = Integer.parseInt( selena.getEval( "var iframeList = window.document.getElementsByTagName('iframe'); for ( var i=0; i<iframeList.length; i++ ) { iframeList.item(i).setAttribute('id','iframe'+i); } iframeList.length;" ).trim() );
+        } catch ( SeleniumException se ) { se.printStackTrace(); }
+        //System.out.println( "frame iframe count = " + frameIframeCount );
+
+        //Process Images in the frame.
+        // System.out.println( "Processing frame images." );
+        for ( int i=0; i<frameImgCount; i++ ) {
+	    String imgId = "img"+Integer.toString(i);
+            String imgSrc =  "";
+	    try { 
+                imgSrc = selena.getEval("window.document.getElementById('"+imgId+"').getAttribute('src');");
+            } catch ( SeleniumException se ) { se.printStackTrace(); }
+
+            String[] imgPieces = imgSrc.trim().split("/");
+            String imgLastPiece = imgPieces[imgPieces.length-1];
+            for ( int j=0; j<contentTypes.size(); j++ ) {
+	       try {
+                   if ( contentTypes.get(j).startsWith("image/png") || contentTypes.get(j).startsWith("image/jpeg") || contentTypes.get(j).startsWith("image/gif") ) {
+                    String[] pieces = adUrls.get(j).trim().split("/");
+                    if ( pieces[pieces.length-1].equals( imgLastPiece ) ) {
+			// System.out.println( pieces[pieces.length-1] + ", " +  imgLastPiece );
+                        try {
+			    selena.getEval("window.document.getElementById('"+imgId+"').parentNode.setAttribute('target','blank'); window.document.getElementById('"+imgId+"').parentNode.parentNode.setAttribute('target','blank'); window.document.getElementById('"+imgId+"').click();");
+                        } catch ( SeleniumException se ) { se.printStackTrace(); }
+                        try {
+                            Thread.sleep( 3000 );
+                       } catch ( InterruptedException ie ) { ie.printStackTrace(); }       
+                               
+                        Iterator iter2 = null;
+                        try { 
+                           iter2 = selena.getWrappedDriver().getWindowHandles().iterator();
+                        } catch ( SeleniumException se ) { se.printStackTrace(); }
+
+                        while ( iter2.hasNext()) {
+                            String windowName = (String)iter2.next();
+			    if ( !windowName.equals( winName ) ) {
+                                try {
+				  selena.selectWindow( windowName );
+                                } catch ( SeleniumException se ) { se.printStackTrace(); }
+                                
+                                try {
+                                   String landingPageUrl = selena.getLocation().trim();
+                                   System.out.println("INSERT INTO landing_page_urls ( ad_url, file_name, content_type, landing_page_url ) VALUES ( '" + ((String)adUrls.get(j)).trim() + "', '" + ((String)fileNames.get(j)).trim() + "', '" + ((String)contentTypes.get(j)).trim() + "', '" + landingPageUrl + "' )");
+
+                                   stmt.executeUpdate("INSERT INTO landing_page_urls ( ad_url, file_name, content_type, landing_page_url ) VALUES ( '" + ((String)adUrls.get(j)).trim() + "', '" + ((String)fileNames.get(j)).trim() + "', '" + ((String)contentTypes.get(j)).trim() + "', '" + landingPageUrl + "' )");
+                                } catch ( SeleniumException se ) { se.printStackTrace(); }
+                                catch ( SQLException sqle ) { sqle.printStackTrace(); }
+                                
+                                try {
+                                  Thread.sleep( 3000 );
+                                } catch ( InterruptedException ie ) { ie.printStackTrace(); }       
+                                try {
+                                  selena.goBack();
+                                } catch ( SeleniumException se )  { se.printStackTrace(); }
+                                try {
+                                  selena.selectWindow( referringWindow );
+                                  selena.getWrappedDriver().switchTo().frame( frameIdx );
+                                } catch ( SeleniumException se ) { se.printStackTrace(); }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+		   }
+		} catch ( SeleniumException se ) { se.printStackTrace(); }
+	   }
+	}
+
+        //Process embeds to get and resolve clicktag urls.
+        System.out.println( "Processing frame embeds." );
+        ArrayList<String> clickTagUrls = new ArrayList<String>();
+        ArrayList<Integer> clickTagEmbedIdx = new ArrayList<Integer>();
+
+        for ( int i=0; i<frameEmbedCount; i++ ) {
+               String embedId = "embed"+Integer.toString(i);
+               String embedSrc = "";
+	       try { 
+                 embedSrc =  selena.getEval("window.document.getElementById('"+embedId+"').getAttribute('src');");
+	       } catch ( SeleniumException se ) { se.printStackTrace(); }
+
+               String[] embedPieces = embedSrc.trim().split("/");
+               String embedLastPiece = embedPieces[embedPieces.length-1];
+	       // System.out.println( "embed last piece = " + embedLastPiece );
+               for ( int j=0; j<contentTypes.size(); j++ ) {
+	         if ( contentTypes.get(j).startsWith("application/x-shockwave-flash") ) {
+	           try {
+                      String[] pieces = adUrls.get(j).trim().split("/");
+                      if ( pieces[pieces.length-1].equals( embedLastPiece ) ) {
+		        System.out.println( "frame embed found: " + pieces[pieces.length-1] + ", " + embedLastPiece );
+                        String flashVarsAttribute = "";
+                        try {
+                            flashVarsAttribute =  selena.getEval("window.document.getElementById('"+embedId+"').getAttribute('flashvars');").trim();
+		        }  catch ( SeleniumException se ) { se.printStackTrace(); }
+                        
+                        String vars = embedSrc + ";" + flashVarsAttribute;
+                        vars = vars.replaceAll("clickTag","clicktag");
+                        vars = vars.replaceAll("CLICKTAG","clicktag");
+                        vars = vars.replaceAll("ClickTag","clicktag");
+                        vars = vars.replaceAll("clickTAG","clicktag");
+                        vars = vars.replaceAll("ClickTAG","clicktag");
+                        vars = vars.replaceAll("Clicktag","clicktag");
+                        String[] varsArray = vars.split(Pattern.quote("clicktag"));
+                     
+                        if ( varsArray.length > 1 ) {
+                         for ( int k=1; k<varsArray.length; k++ ) {
+			   String[] varPieces = varsArray[k].split(Pattern.quote("="));
+                           String clickTagUrl = varPieces[1].trim();
+			   clickTagUrl = clickTagUrl.replace("http%3a//","http://");
+                           clickTagUrl = clickTagUrl.replace("http%3A//","http://");
+                           clickTagUrl = clickTagUrl.replace("HTTP%3A//","http://");
+                           clickTagUrl = clickTagUrl.replace("HTTP%3a//","http://");
+                           clickTagUrl = rtrim(clickTagUrl);
+			   clickTagUrls.add( clickTagUrl );                           
+                           clickTagEmbedIdx.add( new Integer(j) );
+                           clickTagUrl = clickTagUrl.replaceAll("http%3a//","http://");
+                           clickTagUrl = clickTagUrl.replaceAll("http%3A//","http://");
+                           clickTagUrl = clickTagUrl.replaceAll("HTTP%3A//","http://");
+                           clickTagUrl = clickTagUrl.replaceAll("HTTP%3a//","http://");
+
+                           System.out.println( "clickTagUrl = " + clickTagUrl );
+                           String[] httpPieces = clickTagUrl.split("http://");
+                           break;
+			 }
+			}
+                        break;
+                      }
+      	           } catch ( SeleniumException se ) { se.printStackTrace(); } 
+                 }
+               }
+	 }
+
+          for ( int i=0; i<clickTagUrls.size(); i++ ) {
+             // System.out.println( "opening frame landing page, " + clickTagUrls.get(i) );
+             int idx = clickTagEmbedIdx.get(i).intValue();
+
+             try {
+	       selena.getEval( "var link = window.document.createElement('a'); link.setAttribute('href','"+clickTagUrls.get(i)+"'); link.setAttribute('target','blank'); var bodyItems = window.document.getElementsByTagName('body'); var body = bodyItems.item(0); body.appendChild(link); link.click();" );
+	     }  catch ( SeleniumException se ) { se.printStackTrace(); }
+
+              try {
+                   Thread.sleep( 4000 );
+              } catch ( InterruptedException ie ) { ie.printStackTrace(); }                                 
+	         Iterator iter2 = null;
+                 try {
+                   iter2 = selena.getWrappedDriver().getWindowHandles().iterator();
+                 } catch ( SeleniumException se ) { se.printStackTrace(); }
+
+                 while ( iter2.hasNext()) {
+                      String windowName = (String)iter2.next();
+		      if ( !windowName.equals( winName ) ) {
+			  try {
+			    selena.selectWindow( windowName );
+			  } catch ( SeleniumException se ) { se.printStackTrace(); }
+      
+                          try {
+                           String landingPageUrl = selena.getLocation().trim();
+                           System.out.println("INSERT INTO landing_page_urls ( ad_url, file_name, content_type, landing_page_url ) VALUES ( '" + ((String)adUrls.get(idx)).trim() + "', '" + ((String)fileNames.get(idx)).trim() + "', '" + ((String)contentTypes.get(idx)).trim() + "', '" + landingPageUrl + "' )");
+                           stmt.executeUpdate("INSERT INTO landing_page_urls ( ad_url, file_name, content_type, landing_page_url ) VALUES ( '" + ((String)adUrls.get(idx)).trim() + "', '" + ((String)fileNames.get(idx)).trim() + "', '" + ((String)contentTypes.get(idx)).trim() + "', '" + landingPageUrl + "' )");
+                         } catch ( SeleniumException se ) { se.printStackTrace(); }
+			  catch ( SQLException sqle ) { sqle.printStackTrace(); }
+			  try {
+                           selena.goBack();
+                          } catch ( SeleniumException se ) { se.printStackTrace(); }
+                          try {
+			      selena.selectWindow( referringWindow );
+                              selena.getWrappedDriver().switchTo().frame( frameIdx );
+                          } catch ( SeleniumException se ) { se.printStackTrace(); }
+                          break;
+                      }
+		 }
+                 break; 
+	  }
+
+          //here with select frames
+          int iFrameCount = 0;
+          try {
+	      iFrameCount =  Integer.parseInt( selena.getEval("window.frames.length") );
+              System.out.println( "FRAME IFRAME COUNT = " + iFrameCount );
+          } catch ( SeleniumException se ) { se.printStackTrace(); }
+
+          try {
+               selena.selectWindow( referringWindow );
+	  } catch ( SeleniumException se ) { se.printStackTrace(); }
+         
+          for ( int i=0; i<iFrameCount; i++ ) {
+	    try {
+		selena.getWrappedDriver().switchTo().frame(frameIdx).switchTo().frame( i );
+            } catch ( SeleniumException se ) { se.printStackTrace(); }
+            try {
+              System.out.println( "Got frame"+Integer.toString(i) + " = " + selena.getLocation() );
+            } catch ( SeleniumException se ) { se.printStackTrace(); }
+            processFrameII( i, referringWindow );
+            try {
+              selena.selectFrame( "relative=top" );
+            } catch ( SeleniumException se ) { se.printStackTrace(); }  
+          }
+
+        System.out.println( "----------------------------------------" );
     }
 
     public static void processFrame( String _url, String referringWindow ) {
@@ -607,8 +856,7 @@ public class AdMonitor {
                frameEmbedCount = Integer.parseInt( selena.getEval( "var embedList = window.document.getElementsByTagName('embed'); for ( var i=0; i<embedList.length; i++ ) { embedList.item(i).setAttribute('id','embed'+i); } embedList.length;").trim() );
             } catch ( SeleniumException se ) { se.printStackTrace(); }
             // System.out.println( "frame embed count = " + frameEmbedCount );
-
-            
+       
 	    int frameIframeCount = 0;
             try { 
                frameIframeCount = Integer.parseInt( selena.getEval( "var iframeList = window.document.getElementsByTagName('iframe'); for ( var i=0; i<iframeList.length; i++ ) { iframeList.item(i).setAttribute('id','iframe'+i); } iframeList.length;" ).trim() );
@@ -730,13 +978,13 @@ public class AdMonitor {
 			   clickTagUrls.add( clickTagUrl );                           
                            clickTagEmbedIdx.add( new Integer(j) );
 
-                          clickTagUrl = clickTagUrl.replaceAll("http%3a//","http://");
-                          clickTagUrl = clickTagUrl.replaceAll("http%3A//","http://");
-                          clickTagUrl = clickTagUrl.replaceAll("HTTP%3A//","http://");
-                          clickTagUrl = clickTagUrl.replaceAll("HTTP%3a//","http://");
+                           clickTagUrl = clickTagUrl.replaceAll("http%3a//","http://");
+                           clickTagUrl = clickTagUrl.replaceAll("http%3A//","http://");
+                           clickTagUrl = clickTagUrl.replaceAll("HTTP%3A//","http://");
+                           clickTagUrl = clickTagUrl.replaceAll("HTTP%3a//","http://");
 
-                          String[] httpPieces = clickTagUrl.split("http://");
-                          // System.out.println( "Last Piece = " + httpPieces[httpPieces.length-1] );
+                           String[] httpPieces = clickTagUrl.split("http://");
+                           // System.out.println( "Last Piece = " + httpPieces[httpPieces.length-1] );
                          
                            // System.out.println( "frame clickTagUrl = " + clickTagUrl );
                            break;
@@ -898,4 +1146,4 @@ public class AdMonitor {
      catch ( NullPointerException npe ) { npe.printStackTrace(); }
      catch ( InterruptedException ie ) { ie.printStackTrace(); }
   } 
-}
+} 

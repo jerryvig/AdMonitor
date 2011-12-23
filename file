@@ -1,0 +1,89 @@
+Buildfile: /root/Desktop/AdMonitor/build.xml
+
+compile:
+    [javac] /root/Desktop/AdMonitor/build.xml:16: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds
+    [javac] Compiling 1 source file to /root/Desktop/AdMonitor/build/classes
+
+jar:
+    [mkdir] Created dir: /root/Desktop/AdMonitor/build/jar
+      [jar] Building jar: /root/Desktop/AdMonitor/build/jar/AdMonitor.jar
+
+run:
+     [java] Starting Proxy server.
+     [java] Starting FirefoxDriver and getting page traffic.
+     [java] INFO 12/23 11:01:39 o.b.p.j.h.HttpServer - Version Jetty/5.1.x
+     [java] INFO 12/23 11:01:39 o.b.p.j.u.Container  - Started HttpContext[/,/]
+     [java] INFO 12/23 11:01:39 o.b.p.j.h.SocketLis~ - Started SocketListener on 0.0.0.0:4444
+     [java] INFO 12/23 11:01:39 o.b.p.j.u.Container  - Started org.browsermob.proxy.jetty.jetty.Server@11975b59
+     [java] INFO 12/23 11:01:45 o.o.s.r.RemoteWebDr~ - Executing: [null, newSession {"desiredCapabilities":"Capabilities [{platform=ANY, browserName=firefox, version=}]"}]
+     [java] INFO 12/23 11:01:46 o.o.s.r.RemoteWebDr~ - Executing: [dd9d091a-0c5a-4700-b324-08c25f97104d, getCurrentWindowHandle {}]
+     [java] INFO 12/23 11:01:46 o.o.s.r.RemoteWebDr~ - Executing: [dd9d091a-0c5a-4700-b324-08c25f97104d, get {"url":"http://autos.univision.com/"}]
+     [java] Opening DB Connection.
+     [java] Parsing JSON traffic data.
+     [java] Downloading ad media files...
+     [java] /usr/bin/wget -v --output-document=/root/Desktop/AdMonitor/DL/e5db37d63fd19a76b6eab04de9c4aad35856e4f3 --tries=3 http://n.univision.com/ads/ecommerce/pricegrabber/4x4_PriceGrabber_gps.jpg
+     [java] --2011-12-23 03:01:59--  http://n.univision.com/ads/ecommerce/pricegrabber/4x4_PriceGrabber_gps.jpg
+     [java] Resolving n.univision.com... 184.84.222.112, 184.84.222.121
+     [java] Connecting to n.univision.com|184.84.222.112|:80... connected.
+     [java] HTTP request sent, awaiting response... 200 OK
+     [java] Length: 6061 (5.9K) [image/jpeg]
+     [java] Saving to: `/root/Desktop/AdMonitor/DL/e5db37d63fd19a76b6eab04de9c4aad35856e4f3'
+     [java] 
+     [java]      0K .....                                                 100%  503K=0.01s
+     [java] 
+     [java] 2011-12-23 03:01:59 (503 KB/s) - `/root/Desktop/AdMonitor/DL/e5db37d63fd19a76b6eab04de9c4aad35856e4f3' saved [6061/6061]
+     [java] 
+     [java] /usr/bin/wget -v --output-document=/root/Desktop/AdMonitor/DL/60b27f004e454aca81b0480209cce5081ec52390 --tries=3 http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICAtMbA0gEQ2AUYWjIIGPXCxQ2pTAE
+     [java] --2011-12-23 03:01:59--  http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICAtMbA0gEQ2AUYWjIIGPXCxQ2pTAE
+     [java] Resolving pagead2.googlesyndication.com... 74.125.224.58, 74.125.224.57
+     [java] Connecting to pagead2.googlesyndication.com|74.125.224.58|:80... connected.
+     [java] HTTP request sent, awaiting response... 200 OK
+     [java] Length: 29596 (29K) [image/jpeg]
+     [java] Saving to: `/root/Desktop/AdMonitor/DL/60b27f004e454aca81b0480209cce5081ec52390'
+     [java] 
+     [java]      0K .......... .......... ........                        100%  802K=0.04s
+     [java] 
+     [java] 2011-12-23 03:02:00 (802 KB/s) - `/root/Desktop/AdMonitor/DL/60b27f004e454aca81b0480209cce5081ec52390' saved [29596/29596]
+     [java] 
+     [java] /usr/bin/wget -v --output-document=/root/Desktop/AdMonitor/DL/cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523 --tries=3 http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDO7fLXZBCsAhj6ATIIUIMWjvbjg1c
+     [java] --2011-12-23 03:02:00--  http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDO7fLXZBCsAhj6ATIIUIMWjvbjg1c
+     [java] Resolving pagead2.googlesyndication.com... 74.125.224.154, 74.125.224.153
+     [java] Connecting to pagead2.googlesyndication.com|74.125.224.154|:80... connected.
+     [java] HTTP request sent, awaiting response... 200 OK
+     [java] Length: 39989 (39K) [image/jpeg]
+     [java] Saving to: `/root/Desktop/AdMonitor/DL/cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523'
+     [java] 
+     [java]      0K .......... .......... .......... .........            100%  430K=0.09s
+     [java] 
+     [java] 2011-12-23 03:02:00 (430 KB/s) - `/root/Desktop/AdMonitor/DL/cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523' saved [39989/39989]
+     [java] 
+     [java] /usr/bin/wget -v --output-document=/root/Desktop/AdMonitor/DL/d5b0a58bc47161b1b8a831084b366f757c4f0b11 --tries=3 http://s0.2mdn.net/1361550/K2823_NHRG_CYEMS_DEC_300.swf
+     [java] --2011-12-23 03:02:00--  http://s0.2mdn.net/1361550/K2823_NHRG_CYEMS_DEC_300.swf
+     [java] Resolving s0.2mdn.net... 74.125.224.91
+     [java] Connecting to s0.2mdn.net|74.125.224.91|:80... connected.
+     [java] HTTP request sent, awaiting response... 200 OK
+     [java] Length: 43151 (42K) [application/x-shockwave-flash]
+     [java] Saving to: `/root/Desktop/AdMonitor/DL/d5b0a58bc47161b1b8a831084b366f757c4f0b11'
+     [java] 
+     [java]      0K .......... .......... .......... .......... ..        100% 1.27M=0.03s
+     [java] 
+     [java] 2011-12-23 03:02:00 (1.27 MB/s) - `/root/Desktop/AdMonitor/DL/d5b0a58bc47161b1b8a831084b366f757c4f0b11' saved [43151/43151]
+     [java] 
+     [java] INSERT INTO urls_files_types VALUES ( 'http://n.univision.com/ads/ecommerce/pricegrabber/4x4_PriceGrabber_gps.jpg', 'e5db37d63fd19a76b6eab04de9c4aad35856e4f3', 'image/jpeg' )
+     [java] INSERT INTO urls_files_types VALUES ( 'http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgICAtMbA0gEQ2AUYWjIIGPXCxQ2pTAE', '60b27f004e454aca81b0480209cce5081ec52390', 'image/jpeg' )
+     [java] INSERT INTO urls_files_types VALUES ( 'http://pagead2.googlesyndication.com/pagead/imgad?id=CICAgMDO7fLXZBCsAhj6ATIIUIMWjvbjg1c', 'cb99b709a1978bd205ab9dfd4c5aaa1fc91c7523', 'image/jpeg' )
+     [java] 2011-12-23T03:02:00.707-0800  SEVERE  Got a negative receiving time (%d) for URL %s
+     [java] INSERT INTO urls_files_types VALUES ( 'http://s0.2mdn.net/1361550/K2823_NHRG_CYEMS_DEC_300.swf', 'd5b0a58bc47161b1b8a831084b366f757c4f0b11', 'application/x-shockwave-flash' )
+     [java] Getting landing page URLs...
+     [java] INSERT INTO landing_page_urls ( ad_url, file_name, content_type, landing_page_url ) VALUES ( 'http://n.univision.com/ads/ecommerce/pricegrabber/4x4_PriceGrabber_gps.jpg', 'e5db37d63fd19a76b6eab04de9c4aad35856e4f3', 'image/jpeg', 'http://electronics.pricegrabber.com/gps/c/311/' )
+     [java] 2011-12-23T03:02:14.804-0800  WARNING  IOException while trying to report an HTTP error
+     [java] 2011-12-23T03:02:14.809-0800  WARNING  Invalid length: Content-Length=40595 written=17885 for http://spe.atdmt.com/ds/NMMRTSMGUBOX/111207_gow_shop_price/XBOX_FY12_GOWDecember_PriceGrabber_NQC_300x250.swf
+     [java] IFRAME COUNT = 4
+     [java] Got frame0 = http://ad.doubleclick.net/N6881/adi/uim.autos/homepage;content=HOMEPAGE;partner=UNIVISION;client=ONLINE;SITE=UNIVISION;cid=channel1424;cr=223;d=807;z2=94;z3=949;s=CA;t=P;l=M%3ACABL;aol=0;srt=fixed;dp=ON;prelang=SP;tld=net;sld=comcast;sz=728x90;tile=2;ord=332984?
+     [java] Got frame1 = http://ad.doubleclick.net/N6881/adi/uim.autos/homepage;content=HOMEPAGE;partner=UNIVISION;client=ONLINE;SITE=UNIVISION;cid=channel1424;pos=ATF;cr=223;d=807;z2=94;z3=949;s=CA;t=P;l=M%3ACABL;aol=0;srt=fixed;dp=ON;prelang=SP;tld=net;sld=comcast;sz=300x250;tile=5;ord=332984?
+     [java] Got frame2 = http://ad.doubleclick.net/N6881/adi/uim.autos/homepage;content=HOMEPAGE;partner=UNIVISION;client=ONLINE;SITE=UNIVISION;cid=channel1424;pos=BTF;cr=223;d=807;z2=94;z3=949;s=CA;t=P;l=M%3ACABL;aol=0;srt=fixed;dp=ON;prelang=SP;tld=net;sld=comcast;sz=300x250;tile=6;ord=332984?
+     [java] Got frame3 = http://ads.univision.com/html.ng/SITE=AUDIT&CHANNEL=AUTOS&SUBCHANNEL=HOMEPAGE&CONTENT=HOMEPAGE&PARTNER=UNIVISION&CLIENT=ONLINE&CR=223&D=807&Z2=94&Z3=949&S=CA&T=P&L=M%3ACABL&AOL=0&SRT=fixed&DP=ON&PRELANG=SP&TLD=net&SLD=comcast&SIZE=1x1&cid=channel1424?bust=799108
+     [java] Processed all of the frames
+
+BUILD SUCCESSFUL
+Total time: 52 seconds
