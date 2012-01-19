@@ -577,12 +577,11 @@ public class AdMonitor {
           for ( int i=0; i<iFrameCount; i++ ) {
               selena.selectFrame( "relative=top" );  
               selena.getWrappedDriver().switchTo().frame( i );
-              System.out.println( "Got frame"+Integer.toString(i) + " = " + selena.getLocation() );
-              processFrameII( winName );
+              //System.out.println( "Got frame"+Integer.toString(i) + " = " + selena.getLocation() );
+              processFrameII( i, winName );
           }
           
           System.out.println( "Processed all of the frames" );
-          System.exit(0);
 
          try {
             selena.close();
@@ -590,7 +589,7 @@ public class AdMonitor {
       } catch ( SQLException sqle ) { sqle.printStackTrace(); }
     }
 
-    public static void processFrameII( String referringWindow ) {
+    public static void processFrameII( int frameIdx, String referringWindow ) {
         //check for blank iframe.
         if ( selena.getLocation().trim().equals("") || selena.getLocation().trim().equals("about:blank")  ) {
 	    return;
@@ -603,29 +602,19 @@ public class AdMonitor {
         try { 
           frameImgCount = Integer.parseInt( selena.getEval( "var imgList = window.document.getElementsByTagName('img'); for ( var i=0; i<imgList.length; i++ ) { imgList.item(i).setAttribute('id','img'+i); } imgList.length;" ).trim() );
         } catch ( SeleniumException se ) { se.printStackTrace(); }
-        System.out.println ( "frame image count = " + frameImgCount );
+        //System.out.println ( "frame image count = " + frameImgCount );
 
         int frameEmbedCount = 0;
         try {
            frameEmbedCount = Integer.parseInt( selena.getEval( "var embedList = window.document.getElementsByTagName('embed'); for ( var i=0; i<embedList.length; i++ ) { embedList.item(i).setAttribute('id','embed'+i); } embedList.length;").trim() );
         } catch ( SeleniumException se ) { se.printStackTrace(); }
-        System.out.println( "frame embed count = " + frameEmbedCount );
+        //System.out.println( "frame embed count = " + frameEmbedCount );
        
 	int frameIframeCount = 0;
         try { 
            frameIframeCount = Integer.parseInt( selena.getEval( "var iframeList = window.document.getElementsByTagName('iframe'); for ( var i=0; i<iframeList.length; i++ ) { iframeList.item(i).setAttribute('id','iframe'+i); } iframeList.length;" ).trim() );
         } catch ( SeleniumException se ) { se.printStackTrace(); }
-        System.out.println( "frame iframe count = " + frameIframeCount );
-
-        Iterator iter1 = null;
-        try {
-          iter1 = selena.getWrappedDriver().getWindowHandles().iterator();
-        } catch ( SeleniumException se ) { se.printStackTrace(); }      
-
-        String windowName1 = null;
-        while ( iter1.hasNext()) {
-          windowName1 = (String)iter1.next();
-        }
+        //System.out.println( "frame iframe count = " + frameIframeCount );
 
         //Process Images in the frame.
         // System.out.println( "Processing frame images." );
@@ -678,7 +667,8 @@ public class AdMonitor {
                                   selena.goBack();
                                 } catch ( SeleniumException se )  { se.printStackTrace(); }
                                 try {
-                                  selena.selectWindow( windowName1 );
+                                  selena.selectWindow( referringWindow );
+                                  selena.getWrappedDriver().switchTo().frame( frameIdx );
                                 } catch ( SeleniumException se ) { se.printStackTrace(); }
                                 break;
                             }
@@ -689,10 +679,6 @@ public class AdMonitor {
 		} catch ( SeleniumException se ) { se.printStackTrace(); }
 	   }
 	}
-
-        try {
-            selena.selectWindow( windowName1 );
-        } catch ( SeleniumException se ) { se.printStackTrace(); }
 
         //Process embeds to get and resolve clicktag urls.
         System.out.println( "Processing frame embeds." );
@@ -766,7 +752,7 @@ public class AdMonitor {
 	     }  catch ( SeleniumException se ) { se.printStackTrace(); }
 
               try {
-                   Thread.sleep( 5000 );
+                   Thread.sleep( 4000 );
               } catch ( InterruptedException ie ) { ie.printStackTrace(); }                                 
 	         Iterator iter2 = null;
                  try {
@@ -790,7 +776,8 @@ public class AdMonitor {
                            selena.goBack();
                           } catch ( SeleniumException se ) { se.printStackTrace(); }
                           try {
-                           selena.selectWindow( windowName1 ); 
+			      selena.selectWindow( referringWindow );
+                              selena.getWrappedDriver().switchTo().frame( frameIdx );
                           } catch ( SeleniumException se ) { se.printStackTrace(); }
                           break;
                       }
@@ -805,30 +792,24 @@ public class AdMonitor {
               System.out.println( "FRAME IFRAME COUNT = " + iFrameCount );
           } catch ( SeleniumException se ) { se.printStackTrace(); }
 
-          for ( int i=0; i<iFrameCount; i++ ) {
-              selena.selectFrame( null );  
-              selena.getWrappedDriver().switchTo().frame( i );
-              System.out.println( "Got frame"+Integer.toString(i) + " = " + selena.getLocation() );
-              // processFrameII( winName );
-          }
-
-          try {
-               selena.goBack();
-          } catch ( SeleniumException se ) { se.printStackTrace(); }
-          // System.out.println( "closing frame." );
-          try {
-               selena.close();
-          } catch ( SeleniumException se ) { se.printStackTrace(); }
           try {
                selena.selectWindow( referringWindow );
-          } catch ( SeleniumException se ) { se.printStackTrace(); }
-          // System.out.println( "Returning to referring window." );
-
-          
+	  } catch ( SeleniumException se ) { se.printStackTrace(); }
+         
+          for ( int i=0; i<iFrameCount; i++ ) {
+	    try {
+		selena.getWrappedDriver().switchTo().frame(frameIdx).switchTo().frame( i );
+            } catch ( SeleniumException se ) { se.printStackTrace(); }
+            try {
+              System.out.println( "Got frame"+Integer.toString(i) + " = " + selena.getLocation() );
+            } catch ( SeleniumException se ) { se.printStackTrace(); }
+            processFrameII( i, referringWindow );
+            try {
+              selena.selectFrame( "relative=top" );
+            } catch ( SeleniumException se ) { se.printStackTrace(); }  
+          }
 
         System.out.println( "----------------------------------------" );
-        //System.out.println( selena.getWrappedDriver().getPageSource() );
-        // selena.selectFrame("relative=parent");
     }
 
     public static void processFrame( String _url, String referringWindow ) {

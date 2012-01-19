@@ -57,8 +57,7 @@ public class AdMonitor {
     public static void main( String[] args ) {
       try {
          String dateString  = (new java.sql.Date( (new java.util.Date()).getTime() )).toString();
-         harFileName = "/tmp/NetworkTraffic" + dateString + ".har";
-        
+         harFileName = "/tmp/NetworkTraffic" + dateString + ".har";        
          readLists(); 
 
          adKeys = new ArrayList<String>(); 
